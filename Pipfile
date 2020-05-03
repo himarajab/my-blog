@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 django-debug-toolbar = "*"
 django = "*"
+pytest-django = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.6"
