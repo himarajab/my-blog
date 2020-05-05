@@ -12,6 +12,8 @@ pytest-django = "*"
 pytest = "*"
 pytest-pythonpath = "*"
 mixer = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.6"

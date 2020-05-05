@@ -1,6 +1,10 @@
 {% extends 'base.html'%}
+{% block title %}
+    {{ post.title_tag }}
+{% endblock title %}
+
 {% block content%}
-<h1>{{ post.tilte }}</h1>
+<h1>{{ post.title }}</h1>
 <small>
     By {{post.author.first_name}}
     {{post.author.last_name}}
@@ -10,4 +14,4 @@
 {{post.body}}
 <br /><br />
 <a href="{% url 'home'%}" class="btn btn-secondary">back </a>
-{% endblock %}
+{% endblock content%}
