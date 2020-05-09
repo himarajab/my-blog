@@ -6,11 +6,28 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
+
 <h1>Add Post</h1>
+<br/><br/>
+<div class="form-group">
 <form method="post">
-    <br /> <br />
     {% csrf_token %}
     {{form.as_p}}
     <button class="btn btn-secondary">Post</button>
 </form>
-{% endblock content %}
+    </div>
+
+<script>
+    var name = "{{ user.id }}";
+<!--    var name = "{{user.username}}";-->
+    document.getElementById("forJs").value = name;
+</script>
+    {% else %}
+    <div >
+    <p class="btn btn-danger">don't play with me</p>
+    </div>
+
+
+    {% endif %}
+    {% endblock content %}

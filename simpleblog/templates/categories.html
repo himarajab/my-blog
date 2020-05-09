@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if category_posts %}
+    <h2>{{ cats }}</h2>
+<ul>
+    {% for post in category_posts %}
+        {{post.title}}</a> -
+        {{post.author}}
+        {{post.post_date}}
+            {% if user.is_authenticated %}
+            <a href="{% url 'update-post' post.pk %}"> Update Post</a>
+            <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
+            {% endif %}
+            <br />
+    <!--to display slice of body content not all of it -->
+
+        {{post.body|slice:":200"}}
+        </li>
+    {%endfor%}
+</ul>
+{% else%}
+   <h2> there's  no posts</h2>
+{% endif %}
+{% endblock %}

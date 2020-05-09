@@ -23,21 +23,43 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+<!--          Category Menu  Code -->
+        {% if cat_menu %}
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Categories
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+ {% for item in cat_menu %}
+    <a class="dropdown-item"
+       href="{% url 'category' item|slugify %}">
+        {{item}}
+    </a>
+{% endfor %}
 
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'add-post' %}">Add Post</a>
-      </li>
-<!--      <li class="nav-item dropdown">-->
-<!--        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--          Dropdown-->
-<!--        </a>-->
-<!--        <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--          <a class="dropdown-item" href="#">Action</a>-->
-<!--          <a class="dropdown-item" href="#">Another action</a>-->
 <!--          <div class="dropdown-divider"></div>-->
 <!--          <a class="dropdown-item" href="#">Something else here</a>-->
-<!--        </div>-->
-<!--      </li>-->
+        </div>
+      </li>
+{% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'category-list' %}">categories</a>
+      </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add-post' %}">Add Post</a>
+      </li> <li class="nav-item">
+      </li></li>      </li> <li class="nav-item">
+<!--      django authentication already handles this for us-->
+        <a class="nav-link" href="{% url 'logout' %}">Logout </a>
+      </li>
+
+{% else %}
+        <a class="nav-link" href="{% url 'register' %}">Register</a>
+      </li>      </li> <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+{% endif %}
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
