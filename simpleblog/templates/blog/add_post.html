@@ -5,7 +5,7 @@
 
 
 {% block content %}
-
+{% load crispy_forms_tags %}
 {% if user.is_authenticated %}
 
 <h1>Add Post</h1>
@@ -13,7 +13,7 @@
 <div class="form-group">
 <form method="post">
     {% csrf_token %}
-    {{form.as_p}}
+    {{form|crispy}}
     <button class="btn btn-secondary">Post</button>
 </form>
     </div>

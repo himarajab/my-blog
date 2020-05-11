@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'simpleblog',
     'members',
+    'crispy_forms',
 
 ]
 
@@ -126,3 +127,5 @@ STATIC_URL = '/static/'
 #  to override the default redirect page
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+CRSPY_TEMPLATE_PACK = 'bootstrap4'

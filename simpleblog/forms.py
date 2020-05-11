@@ -1,5 +1,5 @@
 from  django import forms
-from .models import Post,Category
+from .models import *
 
 # model form allow to create form fields to our model
 # if i want to fitch values from another model
@@ -7,17 +7,16 @@ from .models import Post,Category
 choices=Category.objects.all().values_list('name')
 
 
-
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields= ('title','title_tag','author','category','body')
+        fields= ('title','title_tag','author','category')
         # fields='__all__'
         # key-value pair of fields and the desired style
         widgets={
             # any attribute to input field pass it as dictionary
             'title':forms.TextInput(attrs={
-                'class':'form-control','placeholder':choices
+                'class':'form-control',
             }),
             'title_tag': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -31,12 +30,10 @@ class PostForm(forms.ModelForm):
             #     'class': 'form-control'
             # }),
             # if want to put choices put it before attrs
-            # 'category': forms.Select(attrs={
-            #     'class': 'form-control',
-            #     'value' : ''
-            # }),
-            'body': forms.Textarea(attrs={
-                'class': 'form-control'
+            'category': forms.TextInput(attrs={
+                'class': 'form-control',
+                'value' : '',
+                'placeholder': choices
             }),
         }
 
@@ -55,7 +52,24 @@ class UpdateForm(forms.ModelForm):
             'title_tag': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
-            'body': forms.Textarea(attrs={
-                'class': 'form-control'
-            }),
         }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('name', 'email', 'body')
+        # # fields='__all__'
+        # # key-value pair of fields and the desired style
+        # widgets = {
+        #     # any attribute to input field pass it as dictionary
+        #     'name': forms.TextInput(attrs={
+        #         'class': 'form-control',
+        #     }),
+        #     'email': forms.TextInput(attrs={
+        #         'class': 'form-control',
+        #     }),
+        #     'body': forms.TextInput(attrs={
+        #         'class': 'form-control'
+        #     }),
+        # }

@@ -1,0 +1,49 @@
+{% extends 'blog/base.html'%}
+{% load crispy_forms_tags %}
+{% block title %}
+    {{ post.title_tag }}
+{% endblock title %}
+
+{% block content%}
+
+<!--current user : {{user.id}}-->
+<!--post author : {{post.author.id}}-->
+<h1>{{ post.title }} </h1>
+
+    By {{post.author}}
+<!--    {{post.author.last_name}}-->
+    {{post.post_date|date:'d-m-Y'}}
+    {% if user.is_authenticated %}
+    {% if user.id == post.author.id%}
+    -
+    <a href="{% url 'update-post' post.pk %}"> Update Post</a>
+    <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
+    {% endif %}
+    {% endif %}
+
+<hr>
+<br /><br />
+<a href="{% url 'home'%}" class="btn btn-secondary">back </a>
+
+
+<div>
+    <h2 class="border-bottom mt-5 mb-3">({{comments.count}})</h2>
+    {% for comment in  comments%}
+    {{comment.title}} in
+    <span class="text-secondary">{{comment.comment_date|date:'d-m-Y' }}</span>
+    <p>{{comment.body}}</p>
+{% empty %}
+    <div class="text-center mb-3 p-4 comment">
+        <h5 class="mb-0"> no comments </h5>
+    </div>
+</div>
+
+
+{% endfor %}
+<h3>add new comment </h3>
+<form method="post">
+    {% csrf_token %}
+    {{comment_form|crispy }}
+    <input class="btn btn-secondary" type="submit" value="comment">
+</form>
+{% endblock content%}

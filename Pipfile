@@ -16,7 +16,7 @@ coverage = "*"
 pytest-cov = "*"
 ipython = "*"
 psycopg2 = "*"
-
+django-crispy-forms = "*"
 
 [requires]
 python_version = "3.6"
