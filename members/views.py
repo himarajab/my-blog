@@ -2,15 +2,6 @@ from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 # before we login or register we want to reverse lazy to where we want to redirect
-from django.urls import reverse_lazy
-
-
-# class UserRegisterView(generic.CreateView):
-#     form_class = UserCreationForm
-#     template_name = 'registra tion/register.html'
-#     success_url = reverse_lazy('login')
-
-
 from django.shortcuts import render, redirect
 from .forms import UserCreationForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
@@ -35,7 +26,7 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'user/register.html', {
+    return render(request, 'registration/register.html', {
         'title': 'register',
         'form': form,
     })
@@ -53,9 +44,7 @@ def login_user(request):
             messages.warning(
                 request, 'هناك خطأ في اسم المستخدم أو كلمة المرور.')
 
-    return render(request, 'user/login.html', {
-        'title': 'تسجيل الدخول',
-    })
+    return render(request, 'registration/login.html', {    })
 
 
 def logout_user(request):
