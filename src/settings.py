@@ -126,6 +126,10 @@ STATIC_URL = '/static/'
 
 #  to override the default redirect page
 LOGIN_REDIRECT_URL = 'home'
+# LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'home'
 
-CRSPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

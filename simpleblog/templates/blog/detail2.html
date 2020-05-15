@@ -8,8 +8,8 @@
     <!-- Button of editing -->
     {% if post.author == user %}
     <div class="form-group btn-editing">
-        <a class="btn btn-secondary" href="{% url 'post-update' post.id %}">تحرير</a>
-        <a class="btn btn-danger" href="{% url 'post-delete' post.id %}">حذف</a>
+        <a class="btn btn-secondary" href="{% url 'update-post' post.id %}">تحرير</a>
+        <a class="btn btn-danger" href="{% url 'delete-post' post.id %}">حذف</a>
     </div>
     {% endif %}
     <h3>{{post.title}}</h3>

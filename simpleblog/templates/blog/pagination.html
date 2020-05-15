@@ -1,0 +1,41 @@
+<div class="pt-3 mt-4 mb-5 text-center">
+    {% if page.has_next %}
+<!--    when click go the next page-->
+    <a class="btn btn-secondary bg-secondary" href="?page={{page.next_page_number}}">next</a>
+    {% else %}
+<!--    make th button appear but in inactive mode-->
+    <a class="btn btn-secondary bg-secondary disabled" href="#">next</a>
+    {% endif %}
+<!--which page i'm in and total pages number -->
+    <span class="pr-4 pl-4">page {{page.number}} from {{page.paginator.num_pages}}</span>
+
+    {% if page.has_previous %}
+    <a class="btn btn-secondary bg-secondary" href="?page={{page.previous_page_number}}">previous</a>
+    {% else %}
+    <a class="btn btn-secondary bg-secondary disabled" href="#">previous</a>
+    {% endif %}
+</div>
+
+
+{% comment %}
+{% if is_paginated %}
+<ul class="pagination">
+{% if page_obj.has_previous %}
+    <li>
+        <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+    </li>
+{% endif %}
+    <li class="">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+    </li>
+{% if page_obj.has_next %}
+    <li>
+        <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+    </li>
+{% endif %}
+</ul>
+{% else %}
+    <h3>Your File Exam</h3>
+    <p>File not yet available</p>
+{% endif %}
+{% endcomment%}

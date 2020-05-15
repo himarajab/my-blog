@@ -10,8 +10,9 @@ choices=Category.objects.all().values_list('name')
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields= ('title','title_tag','author','category')
+        fields= ('title','title_tag','author','category','body')
         # fields='__all__'
+
         # key-value pair of fields and the desired style
         widgets={
             # any attribute to input field pass it as dictionary
@@ -26,9 +27,9 @@ class PostForm(forms.ModelForm):
                 'id':'forJs',
                 'type':'hidden'
             }),
-            # 'author': forms.Select(attrs={
-            #     'class': 'form-control'
-            # }),
+            'body': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
             # if want to put choices put it before attrs
             'category': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -50,6 +51,9 @@ class UpdateForm(forms.ModelForm):
                 'class':'form-control','placeholder':'title placeholder'
             }),
             'title_tag': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'body': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
         }

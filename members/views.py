@@ -49,7 +49,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return render(request, 'user/logout.html', {
+    return render(request, 'registration/logout.html', {
         'title': 'تسجيل الخروج'
     })
 
@@ -58,7 +58,7 @@ def logout_user(request):
 def profile(request):
     posts = Post.objects.filter(author=request.user)
     post_list = Post.objects.filter(author=request.user)
-    paginator = Paginator(post_list, 10)
+    paginator = Paginator(post_list, 3)
     page = request.GET.get('page')
     try:
         post_list = paginator.page(page)
@@ -66,7 +66,7 @@ def profile(request):
         post_list = paginator.page(1)
     except EmptyPage:
         post_list = paginator.page(paginator.num_page)
-    return render(request, 'user/profile.html', {
+    return render(request, 'registration/profile.html', {
         'title': 'الملف الشخصي',
         'posts': posts,
         'page': page,
@@ -77,15 +77,19 @@ def profile(request):
 @login_required(login_url='login')
 def profile_update(request):
     if request.method == 'POST':
+        # instance : the data which we used to  filled the form with
         user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(
+            # files cause we have image field
             request.POST, request.FILES, instance=request.user.profile)
+
         if user_form.is_valid and profile_form.is_valid:
             user_form.save()
             profile_form.save()
             messages.success(
-                request, 'تم تحديث الملف الشخصي.')
+                request, 'Profile Updated ')
             return redirect('profile')
+    # if there's no edit to the data just show it
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
@@ -96,4 +100,4 @@ def profile_update(request):
         'profile_form': profile_form,
     }
 
-    return render(request, 'user/profile_update.html', context)
+    return render(request, 'registration/profile_update.html', context)

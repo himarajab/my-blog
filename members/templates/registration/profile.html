@@ -1,0 +1,52 @@
+{% extends 'blog/base.html' %}
+{% block title %}
+    User Profile
+{% endblock title %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="border p-4 mb-5">
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <img class="img-fluid rounded-circle border m-2" style="width: 120px; height:120px;"
+                src="{{user.profile.image.url}}" alt="{{user.username}}">
+            <div class="mt-3">
+               <a class="btn btn-secondary bg-secondary" href="{% url 'profile-update' %}">
+                <i class="fas fa-pen fa-xs"></i> edit</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <p class="font-weight-bold">User Name: <span class="font-weight-normal">{{user.username}}</span></p>
+            <p class="font-weight-bold">Email : <span class="font-weight-normal">{{user.email}}</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md">
+        <h3 class="border-bottom pb-3 mb-4">Number Of Posts</h3>
+        <h4 class="bg-secondary text-center p-4 text-light">
+            {{posts.count}}
+        </h4>
+
+        <h3 class="border-bottom mb-4 pb-3 mt-5">My Posts</h3>
+        {% for post in post_list %}
+        <ul class="pr-2">
+            <a class="text-dark" href="{% url 'article-details' post.id %}">{{post.title}}</a>
+        </ul>
+        {% empty %}
+        <h4 class="text-center mb-5">There's No Posts</h4>
+        {% endfor %}
+
+        {% include 'blog/pagination.html' with page=post_list %}
+    </div>
+</div>
+{% endblock content %}
