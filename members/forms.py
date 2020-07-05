@@ -9,21 +9,24 @@ class UserCreationForm(forms.ModelForm):
     email = forms.EmailField(label='البريد الإلكتروني')
     # first_name = forms.CharField(label='الاسم الأول')
     # last_name = forms.CharField(label='الاسم الأخير')
+
     password1 = forms.CharField(
-        label='كلمة المرور', widget=forms.PasswordInput(), min_length=8)
-    password2 = forms.CharField(
-        label='تأكيد كلمة المرور', widget=forms.PasswordInput(), min_length=8)
+        label='كلمة المرور', widget=forms.PasswordInput
+        (attrs={'id' : 'passwordField'}) ,min_length=8,
+    )
+    # password2 = forms.CharField(
+    #     label='تأكيد كلمة المرور', widget=forms.PasswordInput(), min_length=8)
 
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name',
-                  'last_name', 'password1', 'password2')
+                  'last_name', 'password1',)
 
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password1'] != cd['password2']:
-            raise forms.ValidationError('كلمة المرور غير متطابقة')
-        return cd['password2']
+    # def clean_password2(self):
+    #     cd = self.cleaned_data
+    #     if cd['password1'] != cd['password2']:
+    #         raise forms.ValidationError('كلمة المرور غير متطابقة')
+    #     return cd['password2']
 
     def clean_username(self):
         cd = self.cleaned_data
@@ -45,7 +48,7 @@ class LoginForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     # first_name = forms.CharField( )
     # last_name = forms.CharField( )
-    user_name = forms.CharField( )
+    user_name    = forms.CharField( )
     email = forms.EmailField()
 
     class Meta:

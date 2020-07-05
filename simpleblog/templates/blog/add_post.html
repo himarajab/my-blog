@@ -26,6 +26,12 @@
     {% else %}
     <div >
     <p class="btn btn-danger">don't play with me</p>
+        {% comment %}
+        return the user to the page which we come from but don't use it with logout
+        {% endcomment %}
+        <a href="{% url 'login' %}?next={{request.get_full_path|urlencode}}">Login</a>
+
+
     </div>
 
 

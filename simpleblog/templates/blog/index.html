@@ -17,8 +17,11 @@
 </div>
 {% empty %}
 <div class="border p-3 mb-3">
-    <h3>لا يوجد تدوينات، إذا كان لديك حساب مسجل من قبل يمكنك <a href="{% url 'login' %}">تسجيل الدخول</a> والقيام بنشر
-        أول تدوينة في الموقع.</h3>
+    
+    <h3> there's no posts if u've an account u can login 
+    <a href="{% url 'login' %}">login </a> 
+
+    </h3>
 </div>
 {% endfor %}
 <!---->

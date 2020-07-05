@@ -25,7 +25,29 @@
 <br /><br />
 <a href="{% url 'home'%}" class="btn btn-secondary">back </a>
 
+<br /><br />
+<hr>
+<form action="{% url 'like-post' post.pk%}" method="POST">
+    {% csrf_token%}
+    {% if user.is_authenticated %}
+    {{ liked }}
+    {% comment %}{% if liked %} {% endcomment %}
+    <button type="submit" name="post_id" value="{{post.id}}"
+            class="btn btn-danger btn-sm">
+        unlike
+    </button>
+    {% comment %}{% else %}{% endcomment %}
+    <button type="submit" name="post_id" value="{{post.id}}"
+            class="btn btn-primary btn-sm">
+        like
+    </button>
+    {% comment %}{% endif %}{% endcomment %}
+    {% else %}
+    <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+    {% endif %}
+    {{total_likes}} likes
 
+</form>
 <div>
     <h2 class="border-bottom mt-5 mb-3">({{comments.count}})</h2>
     {% for comment in  comments%}

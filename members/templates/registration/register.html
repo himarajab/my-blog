@@ -1,20 +1,99 @@
 {% extends 'blog/base.html' %}
-{% block content %}
-{% load crispy_forms_tags %}
+
 {% block title %}
-    Register
+    SignUp
 {% endblock title %}
 
+{% block content %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_tags %}
+
+  {% comment %}<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-6 mb-0">
+        {{ form.email|as_crispy_field }}
+      </div>
+
+      <div class="form-group col-md-6 mb-0">
+        {{ form.password|as_crispy_field }}
+      </div>
+    <div class="form-group col-md-6 mb-0">
+        {{ form.password|as_crispy_field }}
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sign in</button>
+  </form>{%endcomment%}
 
 <div class="border p-4 mb-5">
     <legend class="border-bottom pb-1 mb-3">SignUp</legend>
     <form method="POST">
         {% csrf_token %}
         {{form|crispy}}
-        <input class="btn btn-secondary mt-4" type="submit" value="Register">
+
+<!-- The button used to toggle password visibility -->
+<small class="btn btn-primary float-right py-3 showPasswordToggle" id="showPassword">show password</small>
+
+        <input class="btn btn-secondary mt-4 btn-block" type="submit" value="Register">
     </form>
     <div class="border-top mt-4 pt-2">
         <small>If U Already Have Account  <a href="{% url 'login' %}">Sign In</a></small>
     </div>
 </div>
+{% comment %}<script src="{% static 'js/register.js'%}"></script>{% endcomment %}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script>
+
+// Check javascript has loaded
+
+$(document).ready(function(){
+
+  // Click event of the showPassword button
+
+  $('#showPassword').on('click', function(){
+
+    // Get the password field
+
+    var passwordField = $('#passwordField');
+
+    // Get the current type of the password field will be password or text
+
+    var passwordFieldType = passwordField.attr('type');
+
+    // Check to see if the type is a password field
+
+    if(passwordFieldType == 'password')
+
+    {
+
+        // Change the password field to text
+
+        passwordField.attr('type', 'text');
+
+        // Change the Text on the show password button to Hide
+
+        $(this).textContent('Hide');
+
+    } else {
+
+        // If the password field type is not a password field then set it to password
+
+        passwordField.attr('type', 'password');
+
+        // Change the value of the show password button to Show
+
+        $(this).textContent('Show');
+
+    }
+
+  });
+
+});
+
+
+</script>
 {% endblock content %}

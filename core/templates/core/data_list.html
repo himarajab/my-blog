@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% block title %}
+    Add New Data
+{% endblock title %}
+
+
+{% block content %}
+<ul>
+{% for data in object_list %}
+<div>
+
+<li class="mb-2">
+<a href="{% url 'my_core:detail-data' data.id%}">edit </a>
+<a href="{% url 'my_core:delete-data' data.id%}">delete</a>
+</div>
+{{data.id}}
+{{data.title }}   
+
+{{data.body}}
+
+
+</li>
+{% endfor %}
+</ul>
+
+<script>
+    var name = "{{ user.id }}";
+<!--    var name = "{{user.username}}";-->
+    document.getElementById("forJs").value = name;
+</script>
+
+    {% endblock content %}

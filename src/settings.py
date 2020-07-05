@@ -39,9 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'simpleblog',
+    'geeks',
     'members',
     'crispy_forms',
-
+    'debug_toolbar',
+    'django_filters',
+    # 'accounts.apps.AccountsConfig',
+    'core.apps.CoreConfig',
+    
 ]
 
 MIDDLEWARE = [
@@ -52,8 +57,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]
 ROOT_URLCONF = 'src.urls'
 
 TEMPLATES = [
@@ -79,9 +89,17 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'third',
+        'USER' : 'postgres',
+        'PASSWORD' : 'A1_postgres',
+        'HOST' : 'localhost',
+        'PORT': 5432,
     }
 }
 
@@ -125,11 +143,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #  to override the default redirect page
-LOGIN_REDIRECT_URL = 'home'
-# LOGIN_URL = 'login'
+# LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+# where to save images
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR , 'static')
+]
+
+# SMTP configration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER='rajabhima2@gmail.com'
+EMAIL_HOST_PASSWORD= '01063911837'

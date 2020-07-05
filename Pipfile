@@ -6,18 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django-debug-toolbar = "*"
-django = "*"
-pytest-django = "*"
-pytest = "*"
-pytest-pythonpath = "*"
-mixer = "*"
-coverage = "*"
-pytest-cov = "*"
-ipython = "*"
-psycopg2 = "*"
-django-crispy-forms = "*"
-pillow = "*"
 
 [requires]
 python_version = "3.6"

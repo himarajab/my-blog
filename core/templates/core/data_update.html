@@ -1,0 +1,23 @@
+
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Add New Data
+{% endblock title %}
+
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %} 
+    {{ form|crispy }} 
+    <input type="submit" value="Update"> 
+
+</form>
+
+{% comment %}<script>
+    var name = "{{ user.id }}";
+<!--    var name = "{{user.username}}";-->
+    document.getElementById("forJs").value = name;
+</script>{% endcomment %}
+
+    {% endblock content %}

@@ -4,6 +4,7 @@ urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     # path('',home,name='home'),
     path('article/<int:id>',post_detail,name='article-details'),
+    path('like/<int:pk>',like_view,name='like-post'),
     path('add_post/',AddPostView.as_view(),name='add-post'),
     path('article/detail/<int:pk>',UpdatePostView.as_view(),name='update-post'),
     path('article/<int:pk>/delete',DeletePostView.as_view(),name='delete-post'),
