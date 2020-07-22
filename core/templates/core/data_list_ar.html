@@ -1,19 +1,10 @@
 {% extends 'core/base.html' %}
-
-{% load i18n %}
-
 {% block title %}
     Add New Data
 {% endblock title %}
 
 
 {% block content %}
-
-<p>{% trans "Life is life." %}</p>
-{% get_current_language as LANGUAGE_CODE %}
-LANGUAGE_CODE: {{ LANGUAGE_CODE }}
-
-
 <ul>
 {% for data in object_list %}
 <div>
