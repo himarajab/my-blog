@@ -30,28 +30,3 @@ class Data(models.Model):
 
 
 
-class Data_ar(models.Model):
-    title = models.CharField(max_length=255)
-    # url = models.URLField( max_length=200)    
-    body = models.TextField(null=True,blank=True)
-    Data_date = models.DateField(default=timezone.now)
-    Data_update = models.DateField(auto_now=True)
-
-
-
-    def __str__(self):
-        # {self.title} posted
-        return self.body  
-
-    #     to ease redirection process after success submit (edit or Data )
-
-    def get_absolute_url(self):
-        return reverse('my_core:home')
-
-
-
-
-
-
-
-

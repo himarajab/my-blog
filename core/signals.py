@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save
-from .models import Data,Data_ar
+from .models import Data
 from django.dispatch import receiver
 
 # def customer_profile(sender, instance , created , **kwargs):
