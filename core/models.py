@@ -8,7 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 
 class Data(models.Model):
-    title = models.CharField(max_length=255)
+    # title = models.CharField(max_length=255)
+    title = models.CharField(_("title"), max_length=250)
     # url = models.URLField( max_length=200)
     # i added to this field '' as default value and it worked fine   
     body = JSONField()    

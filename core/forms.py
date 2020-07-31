@@ -2,6 +2,7 @@ from django import forms
 import re
 from .models import Data
 import json
+from django.utils.translation import ugettext_lazy as _
 
 
 class DataForm(forms.ModelForm):
