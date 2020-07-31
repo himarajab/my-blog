@@ -13,7 +13,7 @@ class DataForm(forms.ModelForm):
 
         test_str = self.cleaned_data['body']
         
-        data = re.split('([?!\n])', test_str.strip())
+        data = re.split('([?.;\n])', test_str.strip())
        
         data =re.sub("[\[\]\']", "", str(data))
         
@@ -23,7 +23,7 @@ class DataForm(forms.ModelForm):
         #     data.append(elem+'hello')
 
 
-        print(f'\n {data},{type(data)}\n')
+        # print(f'\n {data},{type(data)}\n')
 
         return data
 
@@ -54,7 +54,7 @@ class UpdateForm(forms.ModelForm):
 
     def clean_body(self):
         data = str(self.cleaned_data['body'])
-        print(f'\n {data}clean_update_body \n')
+        # print(f'\n {data}clean_update_body \n')
         return data
 
     class Meta:

@@ -87,16 +87,21 @@ def profile(fnc):
 
 import json 
 import re
+import nltk.data
+# nltk.download('punkt')
 # @profile
 def main():
     test_str = """
     hello world!how are u?every thing will be fine\nso to speak
     """
  
-    data = re.split('([?!\n])', test_str.strip())
+    # data = re.split('([?\n])', test_str.strip())
     
-    
-    print(data,type(data))    
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    fp = open("/home/hima/Downloads/Video/blog/test.txt")
+    data = fp.read()
+    final_data = tokenizer.tokenize(data)
+    print(final_data[2],type(final_data))    
     # return res_dct 
           
     # print(f'{type(e).__name__}: {e} ')

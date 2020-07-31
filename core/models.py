@@ -11,16 +11,20 @@ class Data(models.Model):
     # url = models.URLField( max_length=200)    
     body = models.TextField(null=True,blank=True)
 
-    # body_json =JSONField(default = '')
-    # body_json =JSONField(blank=True, null=True,default=dict)
+    # By specifying self as the first parameter of the model.ForeignKey call, Django will set this up as a recursive relationship
     
+    
+    # parent = models.ForeignKey('self', 
+    parent = models.ForeignKey('core.Data',
+    null=True, on_delete=models.CASCADE)
+    # body_json =JSONField(default = '')    
     Data_date = models.DateField(default=timezone.now)
     Data_update = models.DateField(auto_now=True)
 
 
 
     def __str__(self):
-        return self.title 
+        return str(self.id)
 
     #     to ease redirection process after success submit (edit or Data )
 
