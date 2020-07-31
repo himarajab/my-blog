@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models.signals import post_save
-
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.postgres.fields import JSONField
 
 class Data(models.Model):
     title = models.CharField(max_length=255)
-    # url = models.URLField( max_length=200)    
-    body = models.TextField(null=True,blank=True)
+    # url = models.URLField( max_length=200)
+    # i added to this field '' as default value and it worked fine   
+    body = JSONField()    
 
     # By specifying self as the first parameter of the model.ForeignKey call, Django will set this up as a recursive relationship
     

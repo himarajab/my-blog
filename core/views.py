@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse,HttpResponseRedirect
 from .forms import DataForm,UpdateForm
 from .models import Data
-
+from django.utils.translation import ugettext_lazy as _
 
 
 class DataCreateView(CreateView):

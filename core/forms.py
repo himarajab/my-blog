@@ -11,9 +11,15 @@ class DataForm(forms.ModelForm):
         # to remove wiered empty strings in the result
         # the () in the pattern to keep the sepreators cause i'll need it when joining
 
+        data_dict = []
+
         test_str = self.cleaned_data['body']
         
         data = re.split('([?.;\n])', test_str.strip())
+        for i,elem in enumerate(data):
+            data_dict.append([i ,elem,1])
+
+        # import ipdb ; ipdb.set_trace()
        
         data =re.sub("[\[\]\']", "", str(data))
         

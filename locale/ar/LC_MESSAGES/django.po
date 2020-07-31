@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-19 04:56+0200\n"
+"POT-Creation-Date: 2020-07-31 08:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,34 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: core/templates/core/data_list.html:12
+#: templates/core/base.html:53
+msgid "categories"
+msgstr "التصنيفات"
+
+#: templates/core/base.html:61
+msgid "Add Data"
+msgstr "اضافة محتوى"
+
+#: templates/core/base.html:65
+msgid "User Profile"
+msgstr "الصفحة الشخصية"
+
+#: templates/core/base.html:72
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: templates/core/base.html:78
+msgid "Register"
+msgstr "تسجيل "
+
+#: templates/core/base.html:83
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: templates/core/base.html:89
+msgid "Search"
+msgstr "بحث"
+
+#: templates/core/data_list.html:12
 msgid "Life is life."
 msgstr "هذه هى الحياة"

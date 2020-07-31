@@ -13,6 +13,7 @@ urlpatterns = i18n_patterns(
     # if django see undefine  url path then the local will be used
     path('members/',include('django.contrib.auth.urls')),
     path('members/',include('members.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
     prefix_default_language=False
  )  + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 

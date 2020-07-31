@@ -133,7 +133,7 @@ LANGUAGES = (
     ('en-us', 'English'),
     ('ar', 'Arabic'),
 )
-LANGUAGE_CODE = 'ar'
+LANGUAGE_CODE = 'en'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )

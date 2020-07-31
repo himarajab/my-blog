@@ -9,9 +9,9 @@
 
 {% block content %}
 
-<!-- <p>{% trans "Life is life." %}</p>
+<p>{% trans "Life is life." %}</p>
 {% get_current_language as LANGUAGE_CODE %}
-LANGUAGE_CODE: {{ LANGUAGE_CODE }} -->
+LANGUAGE_CODE: {{ LANGUAGE_CODE }}
 
 
 <ul>
@@ -22,6 +22,7 @@ LANGUAGE_CODE: {{ LANGUAGE_CODE }} -->
 <a href="{% url 'my_core:detail-data' data.id%}">edit </a>
 <a href="{% url 'my_core:delete-data' data.id%}">delete</a>
 </div>
+<div>{{data.title}}</div>
 <div>{{data.id}}</div>  <div>{{data.parent}} </div>
 
 {% comment %} {% for elem in data.body %}
