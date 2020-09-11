@@ -8,7 +8,6 @@ from django.urls import path,include
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
     path('',include('simpleblog.urls')),
-    path('core/',include('core.urls', namespace='my_core')),
     # the original should listed first
     # if django see undefine  url path then the local will be used
     path('members/',include('django.contrib.auth.urls')),

@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     'django_filters',
+    'channels',
+
     # 'accounts.apps.AccountsConfig',
-    'core.apps.CoreConfig',
-    
 ]
 
 MIDDLEWARE = [
@@ -86,7 +86,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'src.wsgi.application'
+ASGI_APPLICATION = 'src.routing.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

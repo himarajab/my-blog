@@ -1,0 +1,28 @@
+
+ so 
+ you 
+ ? 
+ every 
+ thing 
+ will 
+ be 
+ fine 
+ to 
+ speak 
+ with 
+ third 
+
+
+ 
+ third :3 
+ so :2 
+ you :2 
+ ? :1 
+ every :1 
+ thing :1 
+ will :1 
+ be :1 
+ fine :1 
+ to :1 
+ speak :1 
+ with :1 

@@ -12,16 +12,9 @@
 # for key in sorted(total.keys()) :
 #     print(key , " :: " , total[key])
 
-# import getpass
-# print(getpass.getuser())
 
 # def count_vowls(inputStr):
 #     return sum(1 for let in inputStr if let in "aeiouAEIOU")
-
-
-
-
-
 
 
 # def array_diff(a, b):
@@ -31,18 +24,42 @@
 # print(array_diff([1,2,2,2,3],[2]))
 
 
+from collections import Counter
+import re
+def word_frequency(str1):
+     list1 = str1
+     counts = Counter(list1)
+     sorted_words = dict(counts.most_common() )
+     return sorted_words
 
+def read_file(file_name,mine,res_file):
+     sorted_data = None
+     sorted_data2 = None
+     with open(file_name) as file:
+          data = file.read()
+          edited = data.strip().split()
+          word_result = word_frequency(edited)
 
-# from collections import Counter
-# import re
-# # >>> words = re.findall(r'\w+', open('hamlet.txt').read().lower())
-# def word_frequency(str1):
-#      list1 = str1.split()
-#      counts = Counter(list1)
-#      sorted_words = dict(counts.most_common() )
-#      return sorted_words
+          data_set = set(word_result)
+     with open(mine) as file2:
+          data2 = file2.read().lower()
+          edited2 = data2.strip().split()
+          data_set2 = set(edited2)
+     result = data_set - data_set2
+    #  import ipdb ; ipdb.set_trace()
 
-
+     a = dict.fromkeys(edited)
+     b = dict.fromkeys(edited2)
+     ordered_result = dict.fromkeys(x for x in a if x not in b)
+     for elem,counter in word_result.items():
+         if elem in result:
+            with open(res_file,'a') as file3:
+               file3.write(f"\n {elem} :{counter} ")
+    #  for elem in ordered_result:
+    #     with open(res_file,'a') as file3:
+    #         file3.write(f"\n {elem} ")
+     
+     return result
 
 import cProfile, pstats, io,sys
 import time
@@ -87,25 +104,21 @@ def profile(fnc):
 
 import json 
 import re
-import nltk.data
-# nltk.download('punkt')
+
 # @profile
 def main():
     test_str = """
-    hello world!how are u?every thing will be fine\nso to speak
+    so hello world! how are you ? every thing will be fine so to speak with you
     """
- 
-    # data = re.split('([?\n])', test_str.strip())
-    
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-    fp = open("/home/hima/Downloads/Video/blog/test.txt")
-    data = fp.read()
-    final_data = tokenizer.tokenize(data)
-    print(final_data[2],type(final_data))    
-    # return res_dct 
-          
-    # print(f'{type(e).__name__}: {e} ')
+    file1_path = '/home/hima/Downloads/Video/blog/test.txt'
+    file2_path = '/home/hima/Downloads/Video/blog/test2.txt'
+    file3_path = '/home/hima/Downloads/Video/blog/result.txt'
 
+    file_result = read_file(file1_path,file2_path,file3_path)
+    # import ipdb ; ipdb.set_trace()
+    # return result
+
+    
 
 if __name__ == '__main__':
     main()
