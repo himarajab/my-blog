@@ -4,14 +4,14 @@ from .models import Profile
 
 
 class UserCreationForm(forms.ModelForm):
-    username = forms.CharField(label='اسم المستخدم', max_length=30,
-                               help_text='اسم المستخدم يجب ألا يحتوي على مسافات.')
-    email = forms.EmailField(label='البريد الإلكتروني')
+    username = forms.CharField(label='User Name', max_length=30,
+                               help_text="user name couldn't have spaces")
+    email = forms.EmailField(label='Email')
     # first_name = forms.CharField(label='الاسم الأول')
     # last_name = forms.CharField(label='الاسم الأخير')
 
     password1 = forms.CharField(
-        label='كلمة المرور', widget=forms.PasswordInput
+        label='Password', widget=forms.PasswordInput
         (attrs={'id' : 'passwordField'}) ,min_length=8,
     )
     # password2 = forms.CharField(
@@ -31,14 +31,14 @@ class UserCreationForm(forms.ModelForm):
     def clean_username(self):
         cd = self.cleaned_data
         if User.objects.filter(username=cd['username']).exists():
-            raise forms.ValidationError('يوجد مستخدم مسجل بهذا الاسم.')
+            raise forms.ValidationError('thios user name already exist')
         return cd['username']
 
 
 class LoginForm(forms.ModelForm):
-    username = forms.CharField(label='اسم المستخدم')
+    username = forms.CharField(label='User Name')
     password = forms.CharField(
-        label='كلمة المرور', widget=forms.PasswordInput())
+        label='Password', widget=forms.PasswordInput())
 
     class Meta:
         model = User

@@ -15,6 +15,7 @@
     {{post.author}}
     {{post.post_date}}
         {% if user.is_authenticated %}
+
         {% if user.id == post.author.id%}
         <a href="{% url 'update-post' post.pk %}"> Update Post</a>
         <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
@@ -25,13 +26,19 @@
 
     {{post.body|slice:":200"}}
     </li>
+
 {%endfor%}
+{% include 'blog/pagination.html' with page=posts %}
+
 </ul>
 
             </div>
             <div class="col-md-4">
                 <div class="card">
                     <h3 class="text-center bg-secondary text-light p-2"> Recent Posts</h3>
+                    
+                    
+                        
                    <ul>
                     <li>
                         <a href="#"> First Post</a>
@@ -55,13 +62,13 @@
     <div class="row">
 
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md">
         <small class="text-light">
             @copy; all rights reserved
         </small>
             </div>
-    </div>
+    </div> -->
 </footer>
 
 {% endblock %}

@@ -3,9 +3,7 @@ from simpleblog.owner import   OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
-# Create your views here.
 from simpleblog.models import Post
-# from .forms import PostForm
 from .forms import *
 from .models import *
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
@@ -14,7 +12,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 
 class HomeView(ListView):
     model = Post
-    template_name = 'blog/index.html'
+    template_name = 'blog/home.html'
     ordering = '-post_date'
     paginate_by = 3
 

@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     'django_filters',
-    'channels',
 
     # 'accounts.apps.AccountsConfig',
 ]
@@ -86,16 +85,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'src.wsgi.application'
-ASGI_APPLICATION = 'src.routing.application'
+# ASGI_APPLICATION = 'src.routing.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -107,7 +106,7 @@ DATABASES = {
 #     }
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'third',
+        'NAME': 'blog',
         'USER' : 'postgres',
         'PASSWORD' : 'A1_postgres',
         'HOST' : 'localhost',
@@ -161,7 +160,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #  to override the default redirect page
-# LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
