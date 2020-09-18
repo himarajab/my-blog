@@ -50,6 +50,8 @@
         {% endif %}
         {% if user.is_authenticated %}
       <li class="nav-item"><a class="nav-link" href="{% url 'add-post' %}">Add Post</a></li>
+
+      <li class="nav-item"><a class="nav-link" href="{% url 'favourites' %}">User favourites</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">User Profile</a></li>
 
         <li class="nav-item">

@@ -1,0 +1,8 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content%}
+
+{% for post in  user_favourites %}
+  <h4>{{post}}</h4>
+{% endfor %}
+{% endblock %}

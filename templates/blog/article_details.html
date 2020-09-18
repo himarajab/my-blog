@@ -27,50 +27,53 @@
 
 <br /><br />
 <hr>
-<form action="{% url 'like-post' post.pk%}" method="POST">
+<form action="{% url 'like-or-unlike' post.id%}" method="POST">
     {% csrf_token%}
     {% if user.is_authenticated %}
-    {{ liked }}
-    {% comment %}{% if liked %} {% endcomment %}
+    
+    
+    {% if request.user in post.likes.all %} 
     <button type="submit" name="post_id" value="{{post.id}}"
             class="btn btn-danger btn-sm">
-        unlike
+        DisLke
     </button>
-    {% comment %}{% else %}{% endcomment %}
+{% else %}
     <button type="submit" name="post_id" value="{{post.id}}"
             class="btn btn-primary btn-sm">
-        like
+        Like
     </button>
-    {% comment %}{% endif %}{% endcomment %}
+    {% endif %}
+    
+    
     {% else %}
     <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
     {% endif %}
     {{total_likes}} likes
 
 </form>
-<div>
-    <h2 class="border-bottom mt-5 mb-3">({{comments.count}})</h2>
-    {% for comment in  comments%}
-    {{comment.title}} in
-    <span class="text-secondary">{{comment.comment_date|date:'d-m-Y' }}</span>
-    <p>{{comment.body}}</p>
-{% empty %}
-    <div class="text-center mb-3 p-4 comment">
-        <h5 class="mb-0"> no comments </h5>
-    </div>
-</div>
 
 
-{% endfor %}
 {% comment %}
-<h3>add new comment </h3>
-<form method="post">
-    {% csrf_token %}
-    {{comment_form|crispy }}
-    <input class="btn btn-secondary" type="submit" value="comment">
-</form>
+  
+ <form action="{% url 'like-post' post.pk%}" method="POST">
+    {% csrf_token%}
+    {% if user.is_authenticated %}
+    {{ liked }}
+    <button type="submit" name="post_id" value="{{post.id}}"
+            class="btn btn-danger btn-sm">
+        unlike
+    </button>
+    <button type="submit" name="post_id" value="{{post.id}}"
+            class="btn btn-primary btn-sm">
+        like
+    </button>
+    {% else %}
+    <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+    {% endif %}
+    {{total_likes}} likes
 
-{% endcomment %}
+</form> {% endcomment %}
+
 <div class="border p-3 mb-3">
     <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
         src="{{post.author.profile.image.url}}" alt="صورة الناشر">

@@ -19,6 +19,30 @@
         {% if user.id == post.author.id%}
         <a href="{% url 'update-post' post.pk %}"> Update Post</a>
         <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
+        <form action="{% url 'like-or-unlike' post.id%}" method="POST">
+            {% csrf_token%}
+            {% if user.is_authenticated %}
+            
+            
+            {% if request.user in post.likes.all %} 
+            <button type="submit" name="post_id" value="{{post.id}}"
+                    class="btn btn-danger btn-sm">
+                DisLke
+            </button>
+        {% else %}
+            <button type="submit" name="post_id" value="{{post.id}}"
+                    class="btn btn-primary btn-sm">
+                Like
+            </button>
+            {% endif %}
+            
+            
+            {% else %}
+            <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+            {% endif %}
+            {{total_likes}} likes
+        
+        </form>
         {% endif %}
         {% endif %}
         <br />

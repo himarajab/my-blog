@@ -23,6 +23,10 @@ class HomeView(ListView):
 
         posts = Post.objects.all()
         paginator = Paginator(posts, self.paginate_by)
+        
+        # post = get_object_or_404(Post, id=id)
+        # total_likes = post.total_likes()
+        
         page = self.request.GET.get('page')
         try:
             posts = paginator.page(page)
@@ -87,9 +91,7 @@ def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     comments = post.comments.filter(active=True)
     total_likes = post.total_likes()
-    is_liked = False
-    if post.likes.filter(id = request.user.id).exists():
-        is_liked = True
+
     new_comment = None
     # Comment posted
     if request.method == 'POST':
@@ -110,9 +112,42 @@ def post_detail(request, id):
     return render(request, template_name, {'post': post,
                                            'comments': comments,
                                            'new_comment': new_comment,
-                                           'comment_form': comment_form,
                                            'total_likes' : total_likes,
-                                           'is_liked' : is_liked,})
+                                           'comment_form': comment_form,})
+
+                   
+
+# def post_detail(request, id):
+#     template_name = 'blog/article_details.html'
+#     post = get_object_or_404(Post, id=id)
+#     comments = post.comments.filter(active=True)
+#     total_likes = post.total_likes()
+#     is_liked = False
+#     if post.likes.filter(id = request.user.id).exists():
+#         is_liked = True
+#     new_comment = None
+#     # Comment posted
+#     if request.method == 'POST':
+#         comment_form = CommentForm(data=request.POST)
+#         if comment_form.is_valid():
+
+#             # Create Comment object but don't save to database yet
+#             new_comment = comment_form.save(commit=False)
+#             # Assign the current post to the comment
+#             new_comment.post = post
+#             # Save the comment to the database
+#             new_comment.save()
+#             comment_form = CommentForm()
+
+#     else:
+#         comment_form = CommentForm()
+
+#     return render(request, template_name, {'post': post,
+#                                            'comments': comments,
+#                                            'new_comment': new_comment,
+#                                            'comment_form': comment_form,
+#                                            'total_likes' : total_likes,
+#                                            'is_liked' : is_liked,})
 
 # class ArticleDetailView(DetailView):
 #     model = Post
@@ -154,21 +189,41 @@ def post_detail(request, id):
 #     else:
 #            return HttpResponse("Request method is not a GET")
 
-def like_view(request,pk):
+def like_or_unlike(request,id):
     # grap it from the submitted form by it's name in the form
     # post = get_object_or_404(Post,request.POST.get('post_id'))
-    post = get_object_or_404(Post,id = pk)
-    is_liked = False
-    # if user already clicked like then display dislike
-    if post.likes.filter(id=request.user.id).exists():
+    post = get_object_or_404(Post,id = id)
+    if request.user in post.likes.all():
         post.likes.remove(request.user)
-        is_liked = False
     else:
-        # we say specific user like this post
         post.likes.add(request.user)
-        is_liked = True
-#      redirect to same page
-    return HttpResponseRedirect(reverse('article-details',args =[str(pk)]))
+    return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
+
+def user_favourites(request):
+    # import ipdb ; ipdb.set_trace()
+    # author = Post.blog_posts.author
+    
+    user_favourites= Post.objects.filter(likes=request.user).values()
+
+    # user_favourites= Post.objects.all()
+    return render(request,'blog/user_favourites.html',{'user_favourites':user_favourites}) 
+
+
+# def like_view(request,pk):
+#     # grap it from the submitted form by it's name in the form
+#     # post = get_object_or_404(Post,request.POST.get('post_id'))
+#     post = get_object_or_404(Post,id = pk)
+#     is_liked = False
+#     # if user already clicked like then display dislike
+#     if post.likes.filter(id=request.user.id).exists():
+#         post.likes.remove(request.user)
+#         is_liked = False
+#     else:
+#         # we say specific user like this post
+#         post.likes.add(request.user)
+#         is_liked = True
+# #      redirect to same page
+#     return HttpResponseRedirect(reverse('article-details',args =[str(pk)]))
 
 
 class AddPostView(CreateView):
