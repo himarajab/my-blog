@@ -28,6 +28,10 @@ class Post(models.Model):
     post_update = models.DateField(auto_now=True)
     likes = models.ManyToManyField(User,related_name='blog_posts')
 
+
+    class Meta:
+        ordering = ['-id']
+
     def total_likes(self):
         return self.likes.count()
 

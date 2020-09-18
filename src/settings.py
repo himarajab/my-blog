@@ -26,7 +26,7 @@ SECRET_KEY = '2x!m*8apo(7*kt6if_wyoo_pgn(d0l!1$!bu$xgiw5mj3@igbt'
 DEBUG = config('DEBUG',cast=bool)
 
 ALLOWED_HOSTS = [
-    '127.0.0.1'
+    # '127.0.0.1'
 ]
 
 
@@ -82,6 +82,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+            'poll_extras': 'simpleblog.blog.templatetags.poll_extras',
+
+            }
         },
     },
 ]

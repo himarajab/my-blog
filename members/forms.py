@@ -48,7 +48,7 @@ class LoginForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     # first_name = forms.CharField( )
     # last_name = forms.CharField( )
-    user_name    = forms.CharField( )
+    # user_name    = forms.CharField( )
     email = forms.EmailField()
 
     class Meta:

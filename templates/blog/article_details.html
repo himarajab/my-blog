@@ -27,6 +27,8 @@
 
 <br /><br />
 <hr>
+{% comment %}
+
 <form action="{% url 'like-or-unlike' post.id%}" method="POST">
     {% csrf_token%}
     {% if user.is_authenticated %}
@@ -52,27 +54,104 @@
 
 </form>
 
-
-{% comment %}
   
- <form action="{% url 'like-post' post.pk%}" method="POST">
-    {% csrf_token%}
-    {% if user.is_authenticated %}
-    {{ liked }}
-    <button type="submit" name="post_id" value="{{post.id}}"
-            class="btn btn-danger btn-sm">
-        unlike
-    </button>
-    <button type="submit" name="post_id" value="{{post.id}}"
-            class="btn btn-primary btn-sm">
-        like
-    </button>
-    {% else %}
-    <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
-    {% endif %}
-    {{total_likes}} likes
+{% endcomment %}
+  
+{% if request.user  not in post.likes.all %} 
 
-</form> {% endcomment %}
+    
+    <form id ="myformid"  method="POST">
+        {% csrf_token%}
+        {% if user.is_authenticated %}
+        
+        
+        <input type="submit" value="Like" class="btn btn-primary btn-sm">
+        {% else %}
+        <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+        {% endif %}
+        {{total_likes}} likes
+    
+    </form>
+
+    {% else %}
+
+
+    <form id="dislike_form"  method="POST">
+        {% csrf_token%}
+        {% if user.is_authenticated %}
+        <input value="DisLke" type="submit" class="btn btn-danger btn-sm">
+
+        {% else %}
+        <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+        {% endif %}
+        {{total_likes}} likes
+    
+    </form>
+    
+    {% endif %}
+
+    <script type="text/javascript">
+        $('#myformid').on('submit',function(e){
+            e.preventDefault();
+        
+            dataType:  'json',                     
+            $.ajax({
+                url:"{% url 'like_detail' post.id%}",
+                type:'POST',
+                data:{
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'POST'
+                },
+                success:function(json){
+                 console.log("u liked this post");
+                },
+                error : function(xhr,errmsg,err) {
+                 console.log(xhr.status + ": " + xhr.responseText); 
+                 // provide a bit more info about the error to the console
+            }
+            });
+        
+        
+        });
+        
+        
+
+        $('#dislike_form').on('submit',function(e){
+            e.preventDefault();
+        
+            dataType:  'json',                     
+           
+            $.ajax({
+                url:"{% url 'dislike_detail' post.id%}",
+                type:'POST',
+                data:{
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'POST'
+                },
+                success:function(json){
+                 console.log("u disliked this post");
+                },
+                error : function(xhr,errmsg,err) {
+                 console.log(xhr.status + ": " + xhr.responseText); 
+                 // provide a bit more info about the error to the console
+            }
+            });
+        
+        
+        });
+        
+        
+        
+
+        
+        
+        
+        
+        </script>
+
+
+  
+
 
 <div class="border p-3 mb-3">
     <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"

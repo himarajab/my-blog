@@ -9,6 +9,7 @@ def latest_posts():
     context = {
         'l_posts': Post.objects.all()[0:5],
     }
+    import ipdb ; ipdb.set_trace()
     return context
 
 

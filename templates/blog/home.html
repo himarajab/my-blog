@@ -1,6 +1,6 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-
+{% load poll_extras %}
 <section>
     <div class="container">
         <div class="row mt-2">
@@ -14,27 +14,27 @@
         <a href="{% url 'category' post.category|slugify %}">{{post.category}}</a>
     {{post.author}}
     {{post.post_date}}
-        {% if user.is_authenticated %}
+    {{post.body|slice:":200"}} 
+    {% if user.is_authenticated %}
 
         {% if user.id == post.author.id%}
         <a href="{% url 'update-post' post.pk %}"> Update Post</a>
         <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
-        <form action="{% url 'like-or-unlike' post.id%}" method="POST">
+        <br />
+
+        {% comment %}
+  
+{% if request.user  not in post.likes.all %} 
+        
+
+        <form id="myformid" action="{% url 'like' post.id%}" method="POST"
+        data-href="{% url 'like' post.pk %}">
+        
             {% csrf_token%}
             {% if user.is_authenticated %}
             
-            
-            {% if request.user in post.likes.all %} 
-            <button type="submit" name="post_id" value="{{post.id}}"
-                    class="btn btn-danger btn-sm">
-                DisLke
-            </button>
-        {% else %}
-            <button type="submit" name="post_id" value="{{post.id}}"
-                    class="btn btn-primary btn-sm">
-                Like
-            </button>
-            {% endif %}
+            <input type="submit" value="Like" class="btn btn-primary btn-sm">
+
             
             
             {% else %}
@@ -43,12 +43,96 @@
             {{total_likes}} likes
         
         </form>
+
+        {% else %}
+
+
+        <form id="dislike_form" action="{% url 'dislike' post.id%}" method="POST"
+        data-href="{% url 'dislike' post.pk %}">
+            {% csrf_token%}
+            {% if user.is_authenticated %}
+            <input value="DisLke" type="submit" class="btn btn-danger btn-sm">
+
+
+            {% else %}
+            <p><a href="{% url 'login'%}">login</a> must be logged in to like</p>
+            {% endif %}
+            {{total_likes}} likes
+        
+        </form>
+        
         {% endif %}
+
+        <script type="text/javascript">
+            $('#myformid').on('submit',function(e){
+                e.preventDefault();
+                my_var = $(this).attr("data-href");
+                dataType:  'json',       
+                console.log(my_var),
+                  
+               
+            
+                $.ajax({
+                    url: $(this).attr("data-href"),
+                    type:'POST',
+                    data:{
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                        action: 'POST'
+                    },
+                    success:function(json){
+                     console.log("u liked this post");
+                    },
+                    error : function(xhr,errmsg,err) {
+                     console.log(xhr.status + ": " + xhr.responseText); 
+                     // provide a bit more info about the error to the console
+                }
+                });
+            
+            
+            });
+            
+            
+    
+            $('#dislike_form').on('submit',function(e){
+                e.preventDefault();
+                my_var = $(this).attr("data-href");
+                
+                dataType:  'json',       
+                console.log(my_var),
+                  
+               
+            
+                $.ajax({
+                    url: $(this).attr("data-href"),
+                    type:'POST',
+                    data:{
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                        action: 'POST'
+                    },
+                    success:function(json){
+                     console.log("u disliked this post");
+                    },
+                    error : function(xhr,errmsg,err) {
+                     console.log(xhr.status + ": " + xhr.responseText); 
+                     // provide a bit more info about the error to the console
+                }
+                });
+            
+            
+            });
+            
+   
+            </script>
+            {% endcomment %}
+
+            {% endif %}
+
         {% endif %}
+
         <br />
 <!--to display slice of body content not all of it -->
 
-    {{post.body|slice:":200"}}
+    
     </li>
 
 {%endfor%}
@@ -58,22 +142,16 @@
 
             </div>
             <div class="col-md-4">
-                <div class="card">
+                <!-- <div class="card">
                     <h3 class="text-center bg-secondary text-light p-2"> Recent Posts</h3>
                     
-                    
+                    {% include "blog/latest_posts.html" %}
                         
-                   <ul>
-                    <li>
-                        <a href="#"> First Post</a>
-                    </li>
-                    <li>
-                        <a href="#"> Second Post</a>
-                    </li>
-                </ul>
-                </div>
+                </div> -->
                 <div class="card">
                     <h3 class="text-center bg-secondary text-light p-2"> Recent Comments</h3>
+                    {% include "blog/latest_comments.html" %}
+
                 </div>
 
             </div>

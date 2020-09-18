@@ -13,12 +13,15 @@ from django.http import HttpResponseRedirect,HttpResponse
 class HomeView(ListView):
     model = Post
     template_name = 'blog/home.html'
-    ordering = '-post_date'
     paginate_by = 3
 
     # to grap another context and pass it the template
     def get_context_data(self,*args, **kwargs):
         cat_menu = Category.objects.all()
+        l_posts= Post.objects.all().reverse()[0:3]
+        
+        l_comments= Comment.objects.filter(active=True)[:5]
+
         context = super(HomeView, self).get_context_data(*args,**kwargs)
 
         posts = Post.objects.all()
@@ -37,6 +40,8 @@ class HomeView(ListView):
 
         context['posts'] = posts
         context['cat_menu'] = cat_menu
+        context['l_posts'] = l_posts
+        context['l_comments'] = l_comments
         return context
 
 
@@ -117,37 +122,6 @@ def post_detail(request, id):
 
                    
 
-# def post_detail(request, id):
-#     template_name = 'blog/article_details.html'
-#     post = get_object_or_404(Post, id=id)
-#     comments = post.comments.filter(active=True)
-#     total_likes = post.total_likes()
-#     is_liked = False
-#     if post.likes.filter(id = request.user.id).exists():
-#         is_liked = True
-#     new_comment = None
-#     # Comment posted
-#     if request.method == 'POST':
-#         comment_form = CommentForm(data=request.POST)
-#         if comment_form.is_valid():
-
-#             # Create Comment object but don't save to database yet
-#             new_comment = comment_form.save(commit=False)
-#             # Assign the current post to the comment
-#             new_comment.post = post
-#             # Save the comment to the database
-#             new_comment.save()
-#             comment_form = CommentForm()
-
-#     else:
-#         comment_form = CommentForm()
-
-#     return render(request, template_name, {'post': post,
-#                                            'comments': comments,
-#                                            'new_comment': new_comment,
-#                                            'comment_form': comment_form,
-#                                            'total_likes' : total_likes,
-#                                            'is_liked' : is_liked,})
 
 # class ArticleDetailView(DetailView):
 #     model = Post
@@ -177,27 +151,51 @@ def post_detail(request, id):
 #         context['comments'] = comments
 #         context['comment_form'] = comment_form
 #         return context
+def latest_posts(request):
+    l_posts= Post.objects.all()[0:5]
+    
+    template_name = 'blog/latest_posts.html'
+
+    return render(request, template_name, l_posts)
 
 
-# def likePost(request):
-#     if request.method == 'GET':
-#            post_id = request.GET['post_id']
-#            likedpost = Post.objects.get(pk=post_id) #getting the liked posts
-#            m = Like(post=likedpost) # Creating Like Object
-#            m.save()  # saving it to store in database
-#            return HttpResponse("Success!") # Sending an success response
-#     else:
-#            return HttpResponse("Request method is not a GET")
 
-def like_or_unlike(request,id):
+def like(request,id):
     # grap it from the submitted form by it's name in the form
     # post = get_object_or_404(Post,request.POST.get('post_id'))
     post = get_object_or_404(Post,id = id)
-    if request.user in post.likes.all():
-        post.likes.remove(request.user)
-    else:
-        post.likes.add(request.user)
+    post.likes.add(request.user)
+    # return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
+    return HttpResponseRedirect(reverse('home'))
+
+
+def dislike(request,id):
+    # grap it from the submitted form by it's name in the form
+    # post = get_object_or_404(Post,request.POST.get('post_id'))
+    post = get_object_or_404(Post,id = id)
+    post.likes.remove(request.user)
+    
+    # return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
+    return HttpResponseRedirect(reverse('home'))
+
+
+def like_detail(request,id):
+    # grap it from the submitted form by it's name in the form
+    # post = get_object_or_404(Post,request.POST.get('post_id'))
+    post = get_object_or_404(Post,id = id)
+    post.likes.add(request.user)
     return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
+
+
+def dislike_detail(request,id):
+    # grap it from the submitted form by it's name in the form
+    # post = get_object_or_404(Post,request.POST.get('post_id'))
+    post = get_object_or_404(Post,id = id)
+    post.likes.remove(request.user)
+    
+    return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
+
+
 
 def user_favourites(request):
     # import ipdb ; ipdb.set_trace()

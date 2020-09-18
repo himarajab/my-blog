@@ -1,9 +1,14 @@
-<ul class="list-group-flush latest-post">
+
+<ul class="list-group-flush latest-post">    
+        
+        
     {% for post in l_posts %}
+
     <li class="list-group-item latest-post-item">
         <a class="text-dark" href="{% url 'article-details' post.id %}">{{post.title}}</a>
     </li>
     {% empty %}
-    <li class="list-group-item latest-post-item">لا يوجد تدوينات</li>
+    <li class="list-group-item latest-post-item">there's no posts </li>
     {% endfor %}
+
 </ul>

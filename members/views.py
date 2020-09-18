@@ -46,11 +46,16 @@ def register(request):
 #     return render(request, 'accounts/register.html', context)
 
 
-def login_user(request):
+
+def my_login(request):
     if request.method == 'POST':
         username = request.POST['username']
+        # to remove very weired space in the user name
+        username2 = username.strip()
+
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username2, password=password)
+        # import ipdb ; ipdb.set_trace()
         if user is not None:
             login(request, user)
             return redirect('profile')
@@ -59,7 +64,6 @@ def login_user(request):
                 request, 'wrong username/password')
 
     return render(request, 'registration/login.html', {    })
-
 
 # @unauthenticated_user
 # def loginPage(request):
