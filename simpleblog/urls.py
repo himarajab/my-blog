@@ -3,13 +3,16 @@ from .views import *
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     # path('',home,name='home'),
+    path('article/like/<int:id>',PostLikeRedirect.as_view(),name='like'),
     path('article/<int:id>',post_detail,name='article-details'),
     # path('like/<int:pk>',like_view,name='like-post'),
-    path('like/<int:id>',like,name='like'),
-    path('dislike/<int:id>',dislike,name='dislike'),
 
-    path('like_detail/<int:id>',like_detail,name='like_detail'),
-    path('dislike_detail/<int:id>',dislike_detail,name='dislike_detail'),
+    # path('like/<int:id>',like_post,name='like_post'),
+    
+    # path('like/', like_post, name="like_post"),
+
+
+    # path('dislike_detail/<int:id>',dislike_detail,name='dislike_detail'),
 
     path('user/favourites',user_favourites,name='favourites'),
     

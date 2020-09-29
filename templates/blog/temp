@@ -1,0 +1,80 @@
+<form action="{% url 'like' post.id%}" method="post">
+    {% csrf_token %}
+    
+    {% if liked %}
+    
+        <button type="submit" id="dislike" name="post_id" value="{{ post.id }}" class="btn btn-danger">Dislike</button>
+
+    {% else %}
+        <button  type="submit" id="like" name="post_id" value="{{ post.id }}" class="btn btn-primary">Like</button>
+
+    {% endif %}
+
+</form>
+
+
+<p id="formId">{{ total_likes }} Like{{ total_likes|pluralize }}</p>
+
+{% else %}
+<p>{{ total_likes }} Like{{ total_likes|pluralize }}</p>
+<a class="nav-link" href="{% url 'login' %}">Login to like </a>
+{% endif %}
+
+</div>
+{% endcomment %}
+
+    <script>
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "like"%}',
+                data: {
+                    'id': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response){
+                    //$("#dislike").show();
+                    $('#like-section').html(response['form']);
+                    $("#like").hide();
+                    $("#dislike").toggle();
+                    
+
+                },
+                error: function(rs, e){
+                    console.log(rs.responseText);
+                },
+            });
+        });
+    });
+
+
+
+    $(document).ready(function(event){
+        $(document).on('click', '#dislike', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "like"%}',
+                data: {
+                    'id': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response){
+                    $("#dislike").toggle();
+                    //$("#like").show();
+                    
+                    $('#like-section').html(response['form']);
+
+                },
+                error: function(rs, e){
+                    console.log(rs.responseText);
+                },
+            });
+        });
+    });
+  
+</script>

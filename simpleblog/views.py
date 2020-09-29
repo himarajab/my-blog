@@ -1,13 +1,14 @@
+from django.template.loader import render_to_string
 from simpleblog.owner import   OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 
 from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView,RedirectView
 from simpleblog.models import Post
 from .forms import *
 from .models import *
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 
 
 class HomeView(ListView):
@@ -97,6 +98,10 @@ def post_detail(request, id):
     comments = post.comments.filter(active=True)
     total_likes = post.total_likes()
 
+    liked = False
+    if post.likes.filter(id=request.user.id).exists():
+        liked= True
+
     new_comment = None
     # Comment posted
     if request.method == 'POST':
@@ -114,7 +119,7 @@ def post_detail(request, id):
     else:
         comment_form = CommentForm()
 
-    return render(request, template_name, {'post': post,
+    return render(request, template_name, {'post': post,'liked':liked,
                                            'comments': comments,
                                            'new_comment': new_comment,
                                            'total_likes' : total_likes,
@@ -158,42 +163,37 @@ def latest_posts(request):
 
     return render(request, template_name, l_posts)
 
+class PostLikeRedirect(RedirectView):
+    def get_redirect_url(self,*args, **kwargs):
+        post = get_object_or_404(Post, id=int(self.request.user.id))
+        print(f'\n in the method \n')
 
+        return post.get_absolute_url()
 
-def like(request,id):
-    # grap it from the submitted form by it's name in the form
-    # post = get_object_or_404(Post,request.POST.get('post_id'))
-    post = get_object_or_404(Post,id = id)
-    post.likes.add(request.user)
-    # return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
-    return HttpResponseRedirect(reverse('home'))
-
-
-def dislike(request,id):
-    # grap it from the submitted form by it's name in the form
-    # post = get_object_or_404(Post,request.POST.get('post_id'))
-    post = get_object_or_404(Post,id = id)
-    post.likes.remove(request.user)
+# def like_post(request):
+  
+#     post = get_object_or_404(Post, id=request.POST.get('id'))    
+#     is_liked = False
     
-    # return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
-    return HttpResponseRedirect(reverse('home'))
+#     if post.likes.filter(id=request.user.id).exists():
+#         post.likes.remove(request.user)
+#         is_liked = False
+#     else:
+#         post.likes.add(request.user)
+#         is_liked = True
 
+#     context = {
+#         'post': post,
+#         'is_liked': is_liked,
+#         'total_likes': post.total_likes(),
+#     }
+#     if request.is_ajax():
+#         html = render_to_string('blog/article_details.html', context, request=request)
+#         return JsonResponse({'form': html})
+#         # pass
+#     else:
+#         return HttpResponseRedirect(reverse('article-details',args =[str(request.POST.get('id'))]))
 
-def like_detail(request,id):
-    # grap it from the submitted form by it's name in the form
-    # post = get_object_or_404(Post,request.POST.get('post_id'))
-    post = get_object_or_404(Post,id = id)
-    post.likes.add(request.user)
-    return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
-
-
-def dislike_detail(request,id):
-    # grap it from the submitted form by it's name in the form
-    # post = get_object_or_404(Post,request.POST.get('post_id'))
-    post = get_object_or_404(Post,id = id)
-    post.likes.remove(request.user)
-    
-    return HttpResponseRedirect(reverse('article-details',args =[str(id)]))
 
 
 

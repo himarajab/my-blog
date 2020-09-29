@@ -1,0 +1,11 @@
+label{
+  text-align:right ;
+  margin: 50px;
+  direction: rtl;
+  font-weight: 400px;
+}
+
+#arab{
+  direction: rtl;
+  font-size: x-large;
+}

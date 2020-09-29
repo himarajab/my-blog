@@ -14,8 +14,7 @@ class Category(models.Model):
     #     to ease redirection process after success submit (edit or post )
 
     def get_absolute_url(self):
-        # return reverse('article-details',args=(str(self.id)))
-        return reverse('home')
+        return reverse("article-details", kwargs={"id": self.id})
 
 
 class Post(models.Model):
