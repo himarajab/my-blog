@@ -163,13 +163,48 @@ def latest_posts(request):
 
     return render(request, template_name, l_posts)
 
-class PostLikeRedirect(RedirectView):
+class PostLikeToggle(RedirectView):
     def get_redirect_url(self,*args, **kwargs):
-        post = get_object_or_404(Post, id=int(self.request.user.id))
-        print(f'\n in the method \n')
+        obj = get_object_or_404(Post, id=kwargs['id'])
+        # return reverse('article-details',args =[int(post.id)])
+        #  _ at the end of variables name if they will make conflict
+        url_ =  obj.get_absolute_url()
+        user = self.request.user
+        if user.is_authenticated:
+            if user in obj.likes.all():
+                obj.likes.remove(user)
+            else:
+                obj.likes.add(user)
+        return url_
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
 
-        return post.get_absolute_url()
+class PostLikeAPIToggle(APIView):
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
+    def get(self,*args, **kwargs):
+        # slug = self.kwargs.get("slug")
+        obj = get_object_or_404(Post, id=kwargs['id'])
+        url_ = obj.get_absolute_url()
+        user = self.request.user
+        updated = False
+        liked = False
+        if user.is_authenticated:
+            if user in obj.likes.all():
+                liked = False
+                obj.likes.remove(user)
+            else:
+                liked = True
+                obj.likes.add(user)
+            updated = True
+        data = {
+            "updated": updated,
+            "liked": liked
+        }
+        # import ipdb ; ipdb.set_trace()
+        return Response(data)
 # def like_post(request):
   
 #     post = get_object_or_404(Post, id=request.POST.get('id'))    

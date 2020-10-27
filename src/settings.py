@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'django.contrib.postgres',
     'simpleblog',
     'members',
     'crispy_forms',
     'debug_toolbar',
     'django_filters',
+    'rest_framework'
 
     # 'accounts.apps.AccountsConfig',
 ]

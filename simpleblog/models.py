@@ -41,9 +41,13 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         # return reverse('article-details',args=(str(self.id)))
-        return reverse('home')
+        return reverse("article-details", kwargs={"id": self.id})
 
+    def get_api_like_url(self):
+        return reverse("like-api-toggle", kwargs={"id": self.id})
 
+    def get_like_url(self):
+        return reverse("like-toggle", kwargs={"id": self.id})
 class Comment(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)

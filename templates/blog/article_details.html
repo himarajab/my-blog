@@ -28,10 +28,8 @@
 <br /><br />
 <hr>
 
-<div id="like-section">
 
-{{liked}}
-  
+
 
 
 <div class="border p-3 mb-3">
@@ -49,6 +47,56 @@
     <h3>{{post.title}}</h3>
     <p>{{post.content}}</p>
 </div>
+
+
+<p> <a class="like-btn" data-href="{{post.get_api_like_url}}" href="{{post.get_like_url}}" data-likes = "{{total_likes}}">
+    Likes : {{total_likes}} Like
+</a></p>
+
+
+
+<script>
+    $(document).ready(function(){
+        function updateText(btn,newCount,verb){
+            btn.text(newCount + " " + verb)
+        }
+        $(".like-btn").click(function(e){
+            e.preventDefault()
+            var this_ = $(this)
+            var likeUrl = this_.attr("data-href")
+            //convert string to integer
+            var likeCount =parseInt(this_.attr("data-likes")) | 0
+            var addLike = likeCount +1
+            var removeLike = likeCount -1
+
+            $.ajax({
+                url : likeUrl,
+                method : "GET",
+                data : {},
+                success : function(data){
+                    console.log(data)
+                    var newLikes;
+                    if (data.liked){
+                        //add one
+                         newLikes = likeCount +1
+                         updateText(this_ ,addLike,"like" )
+                    }
+                    else{
+                        //remove one
+
+                         newLikes = likeCount -1
+                         updateText(this_ ,removeLike,"like" )
+                        
+                    
+                    }
+                },
+                error: function(error){
+                    console.log(error,'error')
+                }
+            })
+        })
+    })
+</script>
 
 
 
