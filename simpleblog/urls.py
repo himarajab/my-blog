@@ -3,9 +3,9 @@ from .views import *
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     # path('',home,name='home'),
-    path('like/<int:id>/',PostLikeToggle.as_view(),name='like-toggle'),
+    path('liked/', like_unlike_post, name='like-post-view'),
     path('article/<int:id>',post_detail,name='article-details'),
-    path('api/<int:id>',PostLikeAPIToggle.as_view(),name='like-api-toggle'),
+    
     
     # path('like/<int:pk>',like_view,name='like-post'),
 
@@ -23,6 +23,6 @@ urlpatterns = [
     path('article/<int:pk>/delete',DeletePostView.as_view(),name='delete-post'),
     # path('article/<int:pk>/delete',DeletePostView.as_view(),name='delete-post'),
     # name it what u want here and in the view
-    path('category/<str:cats>',category_view,name='category'),
-    path('category_list',category_list_view,name='category-list'),
+    path('<slug:post>/', post_single, name='post_single'),
+    path('category/<category>/', CatListView.as_view(), name='category'),
 ]

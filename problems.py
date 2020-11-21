@@ -100,6 +100,7 @@ def profile(fnc):
 
 
 
+
 # def myfunc(x:int,y:int) -> int:
 
 import json 
@@ -120,7 +121,39 @@ def main():
 
     
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
 # TODO: use cpython instead of this decrator once i can fix the wiered results that appears
+
+
+from typing import NamedTuple
+class C4(NamedTuple):
+    x :int
+    y:int =1
+    z:int = 2
+
+# >>> c4 = C4(1)
+# >>> c4
+# C4(x=1, y=1, z=2)
+# >>> type(c4)
+# <class '__main__.C4'>
+# >>> c4 = C4(1,3)
+# >>> c4
+# C4(x=1, y=3, z=2)
+
+
+
+# provide default value if u trying access values that doesn't exist
+import collections
+
+dct = collections.defaultdict(int)
+#  dct['a']
+# 0
+# >>> dct['b'] += 2
+# >>> dct
+# defaultdict(<class 'int'>, {'a': 0, 'b': 2})
+dct2 = collections.defaultdict(int,{'a':2,'b':3})
+# dct2['a']
+# 2
+

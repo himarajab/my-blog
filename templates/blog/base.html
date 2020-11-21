@@ -44,9 +44,14 @@
               </div>
             </li>
       {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'category-list' %}">categories</a>
+            
+            {% comment %}
+              
+               <li class="nav-item">
+              <a class="nav-link" href="{% url 'category' %}">categories</a>
             </li>
+            {% endcomment %}
+
               {% endif %}
               {% if user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'add-post' %}">Add Post</a></li>
