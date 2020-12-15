@@ -1,0 +1,307 @@
+{% extends 'blog/base.html'%}
+{% load crispy_forms_tags %}
+{% block title %}
+    {{ post.title_tag }}
+{% endblock title %}
+
+{% block content%}
+
+<!--current user : {{user.id}}-->
+<!--post author : {{post.author.id}}-->
+<div>
+<a href="#" class="btn btn-outline-priamry">Add to favourites</a>
+</div>
+<h1>{{ post.title }} </h1>
+<span id="thumbs" data-value="{{post.id}}"></span>
+
+    By {{post.author}}
+<!--    {{post.author.last_name}}-->
+    {{post.post_date|date:'d-m-Y'}}
+
+    {% if user.is_authenticated %}
+    {% if user.id == post.author.id%}
+    -
+    <a href="{% url 'update-post' post.pk %}"> Update Post</a>
+    <a href="{% url 'delete-post' post.pk %}"> Delete Post</a>
+    {% endif %}
+
+<hr>
+<br /><br />
+<a href="{% url 'home'%}" class="btn btn-secondary">back </a>
+
+<br /><br />
+<hr>
+
+
+
+
+
+<div class="border p-3 mb-3">
+    <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
+        src="{{post.author.profile.image.url}}" alt="صورة الناشر">
+    <span class="text-secondary">Postd In {{post.post_date|date:'d-m-Y'}}</span>
+    <!-- Button of editing -->
+    {% if post.author == user %}
+    <div class="form-group btn-editing">
+        <a class="btn btn-secondary" href="{% url 'update-post' post.id %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'delete-post' post.id %}">Delete</a>
+    </div>
+    {% endif %}
+    {% endif %}
+    <h3>{{post.title}}</h3>
+    <p>{{post.content}}</p>
+</div>
+
+
+<p> <a class="like-btn" data-href="{{post.get_api_like_url}}" href="{{post.get_like_url}}" data-likes = "{{total_likes}}">
+    {% if  total_likes > 0%}
+    Likes : {{total_likes}} Like
+    {% else %}
+    Likes : 0 Like
+
+    {% endif %}
+</a></p>
+
+
+
+<script>
+    $(document).ready(function(){
+        function updateText(btn,newCount,verb){
+            btn.text(newCount + " " + verb)
+        }
+        $(".like-btn").click(function(e){
+            e.preventDefault()
+            var this_ = $(this)
+            var likeUrl = this_.attr("data-href")
+            //convert string to integer
+            var likeCount =parseInt(this_.attr("data-likes")) | 0
+            var addLike = likeCount +1
+            var removeLike = likeCount -1
+
+            $.ajax({
+                url : likeUrl,
+                method : "GET",
+                data : {},
+                success : function(data){
+                    console.log(data)
+                    var newLikes;
+                    if (data.liked){
+                        //add one
+                         newLikes = likeCount +1
+                         updateText(this_ ,addLike,"like" )
+                    }
+                    else{
+                        //remove one
+
+                         newLikes = likeCount -1
+                         updateText(this_ ,removeLike,"like" )
+                        
+                    
+                    }
+                },
+                error: function(error){
+                    console.log(error,'error')
+                }
+            })
+        })
+    })
+</script>
+
+
+
+<!-- Display Comments -->
+ {% with all_comments.count as total_comments %}
+              <h2>
+              {{ total_comments }} comment{{ total_comments|pluralize }}
+              </h2>
+{% endwith %}
+              {% load mptt_tags %}
+<div>
+  {% recursetree all_comments %}
+  <!-- node is the single elment inside the comments list -->
+  <div id="{{node.id}}" class="my-2 p-2" style="border: 1px solid grey">
+  <div class="d-flex justify-content-between"> by {{node.name}}<div>{{node.publish}}</div> </div>
+  <div >{{node.content}}</div>
+  <div>{{node.level}}</div>
+</hr>
+<!-- control how many leels u can reply on  -->
+{% if node.level < 2%}
+
+<button class="button" onclick="myFunction({{node.id}})">Reply</button>
+    
+{% endif %}
+
+
+{% if node.author|stringformat:"s" == user.get_username %}
+<button class="btn btn-secondary btn-sm mr-2" onclick="deleteComment({{node.id}})">Delete</button>
+    
+{% endif %}
+    
+</div>
+
+  {% if not node.is_leaf_node %}
+  
+
+    <div class="children p1-2 p1-md-5">
+        {{children}}
+    </div>
+  {% endif %}
+  {% endrecursetree %}
+</div>
+
+<div class="py-4">
+    <nav aria-label="Page navigation example">
+      {% if comments.has_other_pages %}
+      <ul class="pagination">
+        {% if comments.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+        {% endif %}
+        {% for num in comments.paginator.page_range %}
+        {% if comments.number == l %}
+        <li class="page-item active"><span class="page-link">{{ num }} <span class="sr-only">(current)</span></span>
+        </li>
+        {% else %}
+        <li><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if comments.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+        {% endif %}
+      </ul>
+      {% endif %}
+    </nav>
+  </div>
+
+
+                <h2>Make a new comment</h2>
+
+             <form id="commentform" class="commentform" method="post">
+                 {% csrf_token %}
+                 {% with allcomments.count as  total_comments%}
+                   <p>
+                       {{total_comments}} comment {{total_comments|pluralize}}
+                   </p>
+                 {% endwith %}
+                <!-- capture the post id  -->
+                 <select name="post" id="id_post" class="d-none">
+                     <option value="{{post.id}}" selected="{{post.id}}"></option>
+                 </select>
+
+                 <label class="small">{{comment_form.parent.label}}</label>
+                 {{comment_form.parent}}
+
+                 <div class="d-flex">
+                     <img src="{% for data in avatar%}{{data.avatar.url}} {% endfor %}" >
+                     {{comment_form.content}}
+                 </div>
+
+                 <div class="d-flex flex-row-reverse">
+                     <button value="commentform" id="newcomment" type="submit" class="newcomment btn btn-primary">Submit</button>
+                 </div>
+             </form>
+
+          </div>
+        </div>
+      </div>
+
+
+      <script>
+        $(document).on('click','#newcomment,#newcommentinner',function(e){
+                e.preventDefault()
+                var button = $(this).attr("value");
+                var placemnet = "commentform"
+                if (button == "newcommentform"){
+                    var placemnet = "newcommentform"
+                }
+
+                $.ajax({
+                    url : '{% url "add-comment"%}',
+                    type : "POST",
+                    //capture the whole form dynamically by placing it's submit button value equal to it's id
+                    data : $("#" +button).serialize(),
+                    cashe:false,
+                    success : function(data){
+                        // data = the url returned value
+                        console.log(data)
+
+                        $(',div id="" class="my-2 p-2" style="border:1px solid grey"> <div class="d-flex justify-content-between">by ' + data['user'] + '<div> </div> posted; jsut now </div> <div>' +data['result'] +'</div> <hr> </div>').insertBefore('#'+placemnet);
+
+                    },
+                    error: function(error){
+                        //console.log(error,'error')
+                    }
+                })
+            })
+
+
+
+
+            
+            function deleteComment(id) {
+                console.log(id)
+                $.ajax({
+                  type: 'POST',
+                  url: '{% url "add-comment" %}',
+                  data: {
+                    nodeid: id,
+                    action: 'delete',
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                  },
+                  success: function (json) {
+                    $("#" + json['remove']).remove();
+                  },
+                  error: function (xhr, errmsg, err) {}
+                });
+              }
+
+
+
+
+        function formExit(){
+                document.getElementById("newForm").remove();
+            }    
+
+
+            function myFunction(id){
+                if (document.contains(document.getElementById("newcommentform"))) {
+                    document.getElementById("newcommentform").remove();
+                  }
+                  var postid = document.getElementById('thumbs').getAttribute('data-value');
+                  var imgFullURL = $('img.avatar_comment')[0].src;
+                  var d1 = document.getElementById(id);
+                  d1.insertAdjacentHTML('afterend',
+                    '<form id="newcommentform" class="commentform" method="post"> \
+                      {% csrf_token %} \
+                      <select name="post" class="d-none" id="id_post"> \
+                        <option value="' + postid + '" selected="' + postid + '"></option> \
+                      </select> <label class="small font-weight-bold"></label> \
+                      <select name="parent" class="d-none" id="id_parent"> \
+                        <option value="' + id + '" selected="' + id + '"></option> \
+                      </select> \
+                      <div class="d-flex"> \
+                        <img class="avatar_comment align-self-center" src="' + imgFullURL + '"> \
+                        <textarea name="content" cols="40" rows="1" class="ml-3 mb-3 form-control border-0 comment-add rounded-0" placeholder="Add a public comment" required="" id="id_content"></textarea> \
+                      </div> \
+                      <div class="d-flex flex-row-reverse"> \
+                      <button type="button" class="btn btn-outline-secondary" onclick="formExit()">Close</button> \
+                        <button value="newcommentform" id="newcommentinner" type="submit" class="mr-1 newcomment btn btn-primary ">Submit</button> \
+                      </div> \
+                    </form>'
+                  );
+                }
+              
+              
+              
+                //Reset form on page reload
+              
+                $('.commentform').trigger("reset");
+
+
+
+      </script>
+{% endblock content%}

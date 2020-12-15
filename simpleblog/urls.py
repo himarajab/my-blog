@@ -3,6 +3,10 @@ from .views import *
 urlpatterns = [
     path('',HomeView.as_view(),name='home'),
     # path('',home,name='home'),
+    path('search/',post_search,name='post-search'),
+    path('post_follow_view/',posts_of_following_profiles,name='post-follow-view'),
+    path('add_comment/',add_comment,name='add-comment'),
+
     path('liked/', like_unlike_post, name='like-post-view'),
     path('article/<int:id>',post_detail,name='article-details'),
     
@@ -16,6 +20,7 @@ urlpatterns = [
 
     # path('dislike_detail/<int:id>',dislike_detail,name='dislike_detail'),
 
+    path('fav<int:id>',favourite_add,name='favourite-add'),
     path('user/favourites',user_favourites,name='favourites'),
     
     path('add_post/',AddPostView.as_view(),name='add-post'),

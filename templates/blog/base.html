@@ -53,26 +53,36 @@
             {% endcomment %}
 
               {% endif %}
+
+
+
+
               {% if user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'add-post' %}">Add Post</a></li>
+
+            <li class="nav-item"><a class="nav-link" href="{% url 'password_change' %}">Change Password</a></li>
       
             <li class="nav-item"><a class="nav-link" href="{% url 'favourites' %}">User favourites</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">User Profile</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">User Profile</a></li>
       
               <li class="nav-item">
       <!--      django authentication already handles this for us-->
-              <a class="nav-link" href="{% url 'logout' %}">Logout </a></li>
+              <a class="nav-link" href="{% url 'accounts:logout' %}">Logout </a></li>
       
       {% else %}
-              <a class="nav-link" href="{% url 'register' %}">Register</a>
+              <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
             </li>      </li> <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
       {% endif %}
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" method="get">
+
+            <input type="search" name="q" class="form-control mr-sm-2" placeholder="Search" aria-label="Search"required >              
+
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
+
+            
         </div>
       </nav>
         <body>

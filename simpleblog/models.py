@@ -43,13 +43,14 @@ class Post(models.Model):
         User, on_delete=models.CASCADE, related_name='blog_posts')
     content = models.TextField()
     status = models.CharField(max_length=10, choices=options, default='draft')
+    favurites = models.ManyToManyField(User, related_name='favurite',default=None,blank=True)
     objects = models.Manager()  # default manager
     newmanager = NewManager()  # custom manager
 
 
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('-publish',)
 
     def total_likes(self):
         return self.liked.all()
@@ -69,15 +70,14 @@ class Post(models.Model):
 
 
 class Comment(MPTTModel):
-  
+    author = models.ForeignKey(User,related_name='author',on_delete=models.CASCADE,blank=True, null=True,default=None)
     post = models.ForeignKey(Post,
                              on_delete=models.CASCADE,
                              related_name='comments')
     # to access the subcomments on comment
     parent = TreeForeignKey('self',on_delete=models.CASCADE,null=True,blank=True ,related_name='children')
     # excerpt = models.TextField(null=True)
-    name = models.CharField(max_length=50)
-    email = models.EmailField()
+    # email = models.EmailField()
     content = models.TextField()
     publish = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
@@ -85,8 +85,7 @@ class Comment(MPTTModel):
     class MPTTMeta:
         order_inseration_by = ['publish']
 
-    def __str__(self):
-        return f'Comment by {self.name}'
+    
 
 
 LIKE_CHOICES = (

@@ -7,36 +7,49 @@
 {% block content %}
 {% load crispy_forms_tags %}
 
-  {% comment %}<form method="post">
-    {% csrf_token %}
-    <div class="form-row">
-        <div class="form-group col-md-6 mb-0">
-        {{ form.email|as_crispy_field }}
-      </div>
-
-      <div class="form-group col-md-6 mb-0">
-        {{ form.password|as_crispy_field }}
-      </div>
-    <div class="form-group col-md-6 mb-0">
-        {{ form.password|as_crispy_field }}
-      </div>
-
-    </div>
-
-    <button type="submit" class="btn btn-primary">Sign in</button>
-  </form>{%endcomment%}
-
 <div class="border p-4 mb-5">
     <legend class="border-bottom pb-1 mb-3">SignUp</legend>
+   
+   
     <form method="POST">
         {% csrf_token %}
+
+        
+
+        {% if form.errors %}
+          <p>please correct the following errors </p>
+          
+          {% for field in form %}
+            
+            {% if field.errors %}
+              <div class="alert alert-primary" role="alert">
+                {{field.label}} : {{field.errors|striptags}}
+              </div>
+            {% endif %}
+              
+          {% endfor %}
+        {% endif %}
+          
         {{form|crispy}}
+
+              <div class="custom-control cutom-checkbox">
+                <input type="checkbox"  class="cutom-control-input" id="Newsletter">
+
+                <label for="Newsletter" class="cutom-control-label">
+                  Subscribe to our newsletter
+                </label>
+              </div>
+
+              
 
 <!-- The button used to toggle password visibility -->
 <small class="btn btn-primary float-right py-3 showPasswordToggle" id="showPassword">show password</small>
 
         <input class="btn btn-secondary mt-4 btn-block" type="submit" value="Register">
     </form>
+
+
+
     <div class="border-top mt-4 pt-2">
         <small>If U Already Have Account  <a href="{% url 'login' %}">Sign In</a></small>
     </div>

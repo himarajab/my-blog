@@ -1,0 +1,52 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="{% static 'crud/js/jquery-2.2.4.min.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" />
+
+
+
+{% block title %}
+Main Posts
+
+{% endblock title %}
+
+{% block content %}
+
+<div class="ui grid">
+  <div class="row">
+    <div class="four wide column">
+      {{profile}}
+      <br><br>
+      <a href="{% url 'accounts:profile-list'%}">
+        <button class="ui primary button">People to follow</button>
+      </a>
+      <br><br>
+      following:
+      <ul>
+        {% for profile in  profile.following.all%}
+          <li>{{profile}}</li>
+        {% endfor %}
+      </ul>
+    </div> 
+
+    <div class="twelve widecolumn">
+      posts:
+      <hr>
+      {% for post in posts %}
+        <div class="ui segment">
+          {{post.author}}
+          <hr>
+          {{post.content}}
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

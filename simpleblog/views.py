@@ -1,3 +1,8 @@
+from itertools import chain
+from members.models import Profile
+from django.contrib.postgres.search import SearchVector,SearchQuery,SearchRank
+from django.core import serializers
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
 from django.template.loader import render_to_string
@@ -12,6 +17,33 @@ from .models import *
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 
+
+def posts_of_following_profiles(request):
+    # get the logged in profile
+    curr_profile = Profile.objects.get(user=request.user)
+    # import ipdb ; ipdb.set_trace()
+    # check who we are following 
+    users = [user for user in curr_profile.following.all()]
+    # intial variables
+    posts = []
+    qs = None
+
+    #  get the posts of people who we are following
+    for user in users:
+        profile = Profile.objects.get(user=user)
+        
+        profile_posts = profile.user.blog_posts.all()
+        
+        posts.append(profile_posts)
+
+    my_posts = curr_profile.profiles_posts()
+    posts.append(my_posts)
+
+    # sort and chain the queryset and unpack the post list 
+    if len(posts) > 0:
+        qs = sorted(chain(*posts),reverse=True,key=lambda obj: obj.publish)
+
+    return render(request,'blog/main.html',{'profile':curr_profile,'posts':qs})
 
 class HomeView(ListView):
     model = Post
@@ -133,18 +165,19 @@ def post_detail(request, id):
     template_name = 'blog/article_details.html'
     post = get_object_or_404(Post, id=id)
     all_comments = post.comments.filter(status=True)
-    page = request.GET.get('page',1)
-    paginator = Paginator(all_comments,2)
-    try:
-        comments = paginator.page(page)
-    except PageNotAnInteger:
-        # if user change the page to name
-        comments = paginator.page(1)
-    except EmptyPage:
-        # if user type page = 10 and the max one is 2 
-        comments = paginator.page(paginator.num_pages)
+    
+    
+    # page = request.GET.get('page',1)
+    # paginator = Paginator(all_comments,2)
+    # try:
+    #     comments = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # if user change the page to name
+    #     comments = paginator.page(1)
+    # except EmptyPage:
+    #     # if user type page = 10 and the max one is 2 
+    #     comments = paginator.page(paginator.num_pages)
 
-    user_comment = None
 
 
     # total_likes = post.total_likes()
@@ -158,32 +191,48 @@ def post_detail(request, id):
     # if post.likes.filter(id=request.user.id).exists():
     #     liked= True
 
-    new_comment = None
+    # new_comment = None
     # Comment posted
-    if request.method == 'POST':
-        comment_form = NewCommentForm(data=request.POST)
-        if comment_form.is_valid():
+    # if request.method == 'POST':
+    #     comment_form = NewCommentForm(data=request.POST)
+    #     if comment_form.is_valid():
 
-            # Create Comment object but don't save to database yet
-            new_comment = comment_form.save(commit=False)
-            # Assign the current post to the comment
-            new_comment.post = post
-            # Save the comment to the database
-            new_comment.save()
-            comment_form = NewCommentForm()
-
-    else:
-        comment_form = NewCommentForm()
+    #         # Create Comment object but don't save to database yet
+    #         new_comment = comment_form.save(commit=False)
+    #         # Assign the current post to the comment
+    #         new_comment.post = post
+    #         # Save the comment to the database
+    #         new_comment.save()
+    #         return HttpResponseRedirect('/'+post.id)
+    # else:
+    comment_form = NewCommentForm()
 
     return render(request, template_name, {'post': post,
-                                           'user_comment':  user_comment, 'all_comments': all_comments, 'comments':comments,
-                                           'new_comment': new_comment,
+                                          'all_comments': all_comments, 
+                                        #    'new_comment': new_comment,
                                         #    'total_likes' : total_likes,'liked':liked,
                                            'comment_form': comment_form,
                                            })
 
-                   
-
+def add_comment(request):
+    if request.method == 'POST':
+  
+        if request.POST.get('action') == 'delete':
+            id = request.POST.get('nodeid')
+            print(id)
+            c = Comment.objects.get(id=id)
+            c.delete()
+            return JsonResponse({'remove': id})
+        else:
+            comment_form = NewCommentForm(request.POST)
+            print(comment_form)
+            if comment_form.is_valid():
+                user_comment = comment_form.save(commit=False)
+                result = comment_form.cleaned_data.get('content')
+                user = request.user.username
+                user_comment.author = request.user
+                user_comment.save()
+                return JsonResponse({'result': result, 'user': user})
 
 # class ArticleDetailView(DetailView):
 #     model = Post
@@ -261,7 +310,18 @@ def like_unlike_post(request):
 
 
 
+@login_required(login_url='accounts:login')
+def favourite_add(request,id):
+    post = get_object_or_404(Post, id=id)
+    if post.favourites.filter(id=request.user.id).exists():
+        post.favourites.remove()
+    else:
+        post.favourites.add(request.user)
+    # return the user to the same page they was on 
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
+
+@login_required(login_url='accounts:login') 
 def user_favourites(request):
     # import ipdb ; ipdb.set_trace()
     # author = Post.blog_posts.author
@@ -302,3 +362,68 @@ class DeletePostView(DeleteView):
     # must be explicitly configure
     success_url = reverse_lazy('home')
 
+
+def post_search(request):
+    form = PostSearchForm()
+    q=''
+    results = []
+    category = ''
+    query = Q()
+
+    # if request.POST.get('action') =='post':
+    #     search_string = str(request.POST.get('searchString'))
+    #     # print(search_string)
+    #     if search_string is not None:
+    #         # return only three matched items from the database
+    #         search_string = Post.objects.filter(title__contains=search_string)[:3]
+    #         data = serializers.serialize('json',list(search_string),fields=('pk','title'))
+    #         return JsonResponse({'search_string':data},safe=False)
+            
+    if 'q' in request.GET:
+        form = PostSearchForm(request.GET)
+        if form.is_valid():
+            # once the form checked the data is avaliable via the cleaned mthod
+            q = form.cleaned_data['q']
+            # category = form.cleaned_data['category']
+            # if category is not None:
+            #     query &= Q(category=category)
+
+            if q is not None:
+                query &= Q(title__contains=q)
+
+            # vector = SearchVector('title',weight='A') + \
+            #     SearchVector('content',weight='B')
+            # query = SearchQuery(q)
+
+            # results = Post.objects.annotate(rank=SearchRank(vector,query,cover_density=True)).order_by('-rank')
+
+            # print(f'\n{results}\n')
+            # # results = Post.objects.annotate(search=SearchVector('title','content'),).filter(search=SearchQuery(q))
+            # # results = Post.objects.filter(title__search=q)
+            results = Post.objects.filter(query)
+
+
+    return render(request,'blog/search.html',{'form':form,'q':q,'results':results}) 
+
+
+# def post_search(request):
+#     form = PostSearchForm()
+#     q = ''
+#     results = []
+
+#     if 'q' in request.GET:
+#         form = PostSearchForm(request.GET)
+#         if form.is_valid():
+#             q = form.cleaned_data['q']
+
+#             vector = SearchVector('title', weight='A') + \
+#                 SearchVector('content', weight='B')
+#             query = SearchQuery(q)
+
+#             results = Post.objects.annotate(
+#                 rank=SearchRank(vector, query, cover_density=True)).order_by('-rank')
+
+#     return render(request, 'blog/search.html',
+#                   {'form': form,
+#                    'q': q,
+#                    'results': results})

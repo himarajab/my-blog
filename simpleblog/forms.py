@@ -1,3 +1,4 @@
+
 from  django import forms
 from .models import *
 from mptt.forms import TreeNodeChoiceField
@@ -64,15 +65,34 @@ class NewCommentForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['parent'].required = False
+        self.fields['parent'].required = False 
         self.fields['parent'].label = ''
         # remove the elment from the view
         self.fields['parent'].widget.attrs.update({'class':'d-none'})
     class Meta:
         model = Comment
-        fields = ('name', 'parent','email', 'content')
+        fields = ( 'parent', 'content','post')
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'col-sm-12'}),
-            'email': forms.TextInput(attrs={'class': 'col-sm-12'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+
+            'content': forms.Textarea(attrs={'class': 'ml-3 mb-3 form-control border-0 comment-add rounded-0','rows':'1','placeholder':'add a public comment'}),
         }
+    def save(self, *args, **kwargs):
+       Comment.objects.rebuild()
+       super(NewCommentForm, self).save(*args, **kwargs) # Call the real save() method
+
+
+class PostSearchForm(forms.Form):
+    q=forms.CharField()
+    # category = forms.ModelChoiceField(queryset = Category.objects.all().order_by('name'))   
+
+    
+    def __init__(self, *args, **kwargs):
+        
+        super().__init__(*args, **kwargs)
+        # self.fields['category'].required = False
+        
+        # self.fields['category'].label = 'Category'
+        self.fields['q'].label = 'Search For'
+        self.fields['q'].widget.attrs.update({'class':'form-control menudd'})
+        self.fields['q'].widget.attrs.update({'data-toggle':'dropdown'})
+    

@@ -3,17 +3,32 @@
     Login
 {% endblock title %}
 {% block content %}
+
+{% if request.user.is_authenticated %}
+    <script>
+        window.location.href='{% url "accounts:profile"%}';
+    </script>
+{% endif %}
+    
+
+
+
+
 <div class="border p-4 mb-5">
     <legend class="border-bottom pb-1 mb-3">Sign Up</legend>
-    {% if messages %}
+    
+    <form method="POST">
+        {% csrf_token %}
+    
+    
+        {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-{{message.tags}}">
+    <div class="alert alert-{{message.tags}}" >
         {{message}}
     </div>
     {% endfor %}
     {% endif %}
-    <form method="POST">
-        {% csrf_token %}
+
         <div class="form-group">
             <label for="username">User Name</label>
             <input type="text" name="username" id="username" class="form-control" placeholder="Enter User Name">
@@ -25,7 +40,16 @@
         <input class="btn btn-secondary mt-4" type="submit" value="Sign In">
     </form>
     <div class="border-top mt-4 pt-2">
-        <small>Don't Have Account Yet ! <a href="{% url 'register' %}">Sign Up Now</a></small>
+        <small>Don't Have Account Yet ! <a href="{% url 'accounts:register' %}">Sign Up Now</a></small>
     </div>
+
+{% comment %}
+    
+    
+    <div class="border-top mt-4 pt-2">
+        <small>Don't Have Account Yet ! <a href="{% url 'accounts:reset_password' %}">forget your password </a></small>
+    </div>
+{% endcomment %}
+
 </div>
 {% endblock content %}

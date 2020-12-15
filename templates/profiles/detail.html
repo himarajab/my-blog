@@ -1,0 +1,90 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="{% static 'crud/js/jquery-2.2.4.min.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" />
+
+
+
+{% block title %}
+    User Profile
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="ui basic modal">
+    <div class="ui icon header">
+      <i class="user plus icon"></i>
+      are you sure you want to follow {{object}}
+    </div>
+    <div class="content">
+      <p>you will see all posts published by {{object}}</p>
+    </div>
+    <div class="actions">
+      <div class="ui green ok inverted button">
+        <form action="{% url 'accounts:follow-unfollow'%}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="profile_pk" value="{{object.pk}}">
+            <button type="submit" class="ui green ok massive button">
+        <i class="checkmark icon"></i>
+        Yes
+    </button>
+</form>
+
+      </div>
+    </div>
+  </div>
+
+<div class="ui grid">
+    <div class="row">
+        <div class="four wide column">
+            {{object}}
+            <hr>
+            
+            {% if follow %}
+                <form action="{% url 'accounts:follow-unfollow'%}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value="{{object.pk}}">
+                    <button type="submit" class="ui negative button">unfollow</button>
+                </form>
+            {% else %}
+                <button id="follow-btn" class="ui positive button">follow</button>
+            {% endif %}
+                
+        </div>
+
+{% comment %}
+    
+    
+        <div class="tweleve wide column">
+            {% for post in object.profiles_posts %}
+              <div class="ui segment">
+                  {{post.body}}
+              </div>
+            {% endfor %}
+
+        </div>
+
+
+{% endcomment %}
+
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function(){
+        // if we click the button display the modal
+        $('#follow-btn').click(function(){
+            $('.ui.basic.modal')
+            .modal('show')
+        })
+    })
+</script>
+
+{% endblock content %}
