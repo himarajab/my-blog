@@ -52,7 +52,8 @@
     <p>{{post.content}}</p>
 </div>
 
-
+{% comment %}
+  
 <p> <a class="like-btn" data-href="{{post.get_api_like_url}}" href="{{post.get_like_url}}" data-likes = "{{total_likes}}">
     {% if  total_likes > 0%}
     Likes : {{total_likes}} Like
@@ -61,6 +62,7 @@
 
     {% endif %}
 </a></p>
+{% endcomment %}
 
 
 
