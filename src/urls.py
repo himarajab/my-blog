@@ -7,6 +7,7 @@ from django.urls import path,include
 
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
+    path('chat/', include('chat.urls')),
     path('',include('simpleblog.urls')),
     # mine is the first cause easily override the common ones
     path('members/',include('members.urls',namespace="accounts")),

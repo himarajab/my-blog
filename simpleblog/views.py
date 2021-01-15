@@ -72,7 +72,6 @@ def category_list(request):
 
 
 def post_single(request, post):
-    
     post = get_object_or_404(Post, slug=post, status='published')
 
     all_comments = post.comments.filter(status=True)

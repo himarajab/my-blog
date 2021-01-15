@@ -40,16 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'django.contrib.postgres',
+    # mine
     'simpleblog',
     'members',
+    'chat',
+    
+    # third party
+    'django.contrib.postgres',
     'crispy_forms',
     'debug_toolbar',
     'django_filters',
     'rest_framework',
-    'mptt'
+    'mptt',
+    'channels',
 
-    # 'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -190,6 +194,13 @@ STATICFILES_DIRS = [
 
 # SMTP configration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-                                                                                                                                                                                                                                                                                                                                                                                          
-
-
+                                                                                                                                                                                
+ASGI_APPLICATION = 'src.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
