@@ -26,7 +26,8 @@ SECRET_KEY = '2x!m*8apo(7*kt6if_wyoo_pgn(d0l!1$!bu$xgiw5mj3@igbt'
 DEBUG = config('DEBUG',cast=bool)
 
 ALLOWED_HOSTS = [
-    # '127.0.0.1'
+    'my-blog5.herokuapp.com',
+    '127.0.0.1'
 ]
 
 
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
     'django.middleware.locale.LocaleMiddleware', 
@@ -178,7 +180,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+
 STATIC_URL = '/static/'
+
 
 #  to override the default redirect page
 LOGIN_REDIRECT_URL = 'home'
@@ -191,6 +195,8 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR , 'static')
 ]
+# create a folder containing all static files
+STATIC_ROOT =os.path.join(BASE_DIR , 'staticfiles')
 
 # SMTP configration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
