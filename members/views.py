@@ -202,7 +202,7 @@ def activate(request,uidb64,token):
         user.is_active=True
         user.save()
         login(request,user)
-        return redirect('profile')
+        return redirect('accounts:profile')
     else:
         return render(request,'registration/activation_invalid.html')
 
