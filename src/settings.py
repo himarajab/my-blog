@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'simpleblog',
     'members',
     'chat',
+    'pictures',
     
     # third party
     'django.contrib.postgres',

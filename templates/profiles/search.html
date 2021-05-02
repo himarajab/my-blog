@@ -1,0 +1,49 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+home
+{% endblock title %}
+
+{% block content %}
+    <input id="search_here" class="form-control mb-3" placeholder="type here to search.." />
+    
+    <div id="box">
+      
+        
+        
+        {% for item in object_list %}
+            <b>{{item}}<b><br>
+        {% endfor %}
+
+    </div>
+
+
+
+
+    <script>
+      const data = '{{qs_json}}'
+  
+      const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
+  
+      const input = document.getElementById('search_here')
+  
+      let filteredArr = []
+  
+      input.addEventListener('keyup', (e)=>{
+           box.innerHTML = ""
+           console.log(e.target.value.toLowerCase() )
+           filteredArr = rdata.filter(info=> info['title'].includes(e.target.value.toLowerCase()))
+           if (filteredArr.length > 0){
+           filteredArr.map(info=>{
+            box.innerHTML += `<a href="#">${info['title']}</a><br>`
+           })
+           } else {
+            box.innerHTML = "<b>No results found...</b>"
+          } 
+      })
+  
+  </script>
+    
+{% endblock content %}
+
+

@@ -1,24 +1,25 @@
-from django.views.generic import ListView,DetailView
-from .models import Profile
-from django.http import HttpResponse
+import json
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes,force_text
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-from .token import account_activation_token
-from django.shortcuts import render,redirect
-from django.views import generic
-from django.contrib.auth.forms import UserCreationForm
-# before we login or register we want to reverse lazy to where we want to redirect
-from django.shortcuts import render, redirect
-from .forms import UserCreationForm, UserLoginForm, UserUpdateForm, ProfileUpdateForm
-from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import DetailView, ListView
 from simpleblog.models import Post
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-import json
+
+from .forms import (ProfileUpdateForm,
+                    UserCreationForm,
+                    UserUpdateForm)
+from .models import Profile
+from .token import account_activation_token
+from simpleblog.models import Post
 
 
 def follow_unfollow_profile(request):
@@ -27,10 +28,10 @@ def follow_unfollow_profile(request):
         pk = request.POST.get('profile_pk')
         obj = Profile.objects.get(pk=pk)
         if obj.user in my_profile.following.all():
-             my_profile.following.remove(obj.user)
+            my_profile.following.remove(obj.user)
         else:
-             my_profile.following.add(obj.user)
-        
+            my_profile.following.add(obj.user)
+
         # stay in the same page
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('profile-list')
@@ -48,15 +49,15 @@ def register(request):
             current_site = get_current_site(request)
             subject = 'Activate Your Account'
 
-            message  = render_to_string('registration/account_activation_email.html',
-            {
-                'user':new_user,
-                'domain':current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(new_user.pk)),
-                'token':account_activation_token.make_token(new_user),
-            })
+            message = render_to_string('registration/account_activation_email.html',
+                                       {
+                                           'user': new_user,
+                                           'domain': current_site.domain,
+                                           'uid': urlsafe_base64_encode(force_bytes(new_user.pk)),
+                                           'token': account_activation_token.make_token(new_user),
+                                       })
 
-            new_user.email_user(subject=subject,message=message)
+            new_user.email_user(subject=subject, message=message)
             return HttpResponse('registered succesfully and activation sent')
     else:
         form = UserCreationForm()
@@ -81,9 +82,8 @@ def register(request):
 #     return render(request, 'accounts/register.html', context)
 
 
-
 def my_login(request):
-    
+
     if request.method == 'POST':
         username = request.POST['username']
         # to remove very weired space in the user name
@@ -99,7 +99,7 @@ def my_login(request):
             messages.error(
                 request, 'wrong username/password')
 
-    return render(request, 'registration/login.html', {    })
+    return render(request, 'registration/login.html', {})
 
 # @unauthenticated_user
 # def loginPage(request):
@@ -119,15 +119,13 @@ def my_login(request):
 
 #     return render(request, 'accounts/login.html', context)
 
+
 def logout_user(request):
     logout(request)
     # return redirect('home')
     return render(request, 'registration/logout.html', {
         'title': ' Sign Out'
     })
-
-
-
 
 
 # add admin user to admin group and remove them from customer group (default)
@@ -158,10 +156,7 @@ def profile(request):
     # myFilter = OrderFilter(request.GET, queryset=orders)
     # orders = myFilter.qs
 
-    # context = {'customer': customer, 'orders': orders, 'order_count': order_count,
-    #            'myFilter': myFilter}
 
-# @allowed_users(allowed_roles=['customer','admin'])
 @login_required(login_url='login')
 def profile_update(request):
     if request.method == 'POST':
@@ -191,33 +186,32 @@ def profile_update(request):
     return render(request, 'registration/profile_update.html', context)
 
 
-def activate(request,uidb64,token):
+def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-    except (TypeError,ValueError,OverflowError,User.DoesNotExist):
-        user=None
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
 
-    if user is not None and account_activation_token.check_token(user,token):
-        user.is_active=True
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
         user.save()
-        login(request,user)
+        login(request, user)
         return redirect('accounts:profile')
     else:
-        return render(request,'registration/activation_invalid.html')
+        return render(request, 'registration/activation_invalid.html')
 
 
 class ProfileListView(ListView):
     model = Profile
-    context_object_name = 'profiles' #object_list default
-    template_name='profiles/main.html'
+    context_object_name = 'profiles'  # object_list default
+    template_name = 'profiles/main.html'
 
-    def get_queryset(self):    
+    def get_queryset(self):
         all_users = Profile.objects.all().exclude(user=self.request.user)
         print(f'\n{all_users}\n')
 
         return all_users
-
 
 
 class ProfileDetailView(DetailView):
@@ -230,13 +224,27 @@ class ProfileDetailView(DetailView):
         return view_profile
 
     def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         view_profile = self.get_object()
-        my_profile = Profile.objects.get(user = self.request.user)
+        my_profile = Profile.objects.get(user=self.request.user)
         if view_profile.user in my_profile.following.all():
             follow = True
         else:
             follow = False
-        
+
         context['follow'] = follow
+        return context
+
+
+class PostSearchListView(ListView):
+    model = Post
+    template_name = 'profiles/search.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # q = self.request.POST.get('q')
+        # context["qs_json"] = json.dumps(list(Profile.objects.filter(user__first_name__icontains=q)))
+
+        context["qs_json"] = json.dumps(list(Post.objects.values('title')))
         return context

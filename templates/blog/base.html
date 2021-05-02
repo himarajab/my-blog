@@ -5,14 +5,13 @@
     <meta charset="utf-8">
 
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'crud/css/bootstrap.extension.css' %}" rel="stylesheet" type="text/css" />
+    <!-- <link href="{% static 'css/bootstrap.extension.css' %}" rel="stylesheet" type="text/css" /> -->
     {% block stylesheet %}{% endblock stylesheet %}
-    <script src="{% static 'crud/js/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
 
     <title>
       {% comment %}     the default one unless we specify another one {% endcomment %}
             {% block title %}
-            Hello, world!
             {% endblock title %}
           </title>
           
@@ -75,7 +74,7 @@
               <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
       {% endif %}
           </ul>
-          <form class="form-inline my-2 my-lg-0" method="get">
+          <form class="form-inline my-2 my-lg-0" method="post">
 
             <input type="search" name="q" class="form-control mr-sm-2" placeholder="Search" aria-label="Search"required >              
 
